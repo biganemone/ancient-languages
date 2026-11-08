@@ -1,10 +1,10 @@
-# Ancient Languages Reader
+# Ancient Languages
 
 A free, open-source iPhone and iPad app for reading ancient texts in the original. Tap a word to see its parse, a short definition, and the full entry in the standard dictionaries. The original is shown with an English translation, aligned passage by passage. Highlights, notes and flashcards (spaced repetition, built from the texts' vocabulary) are included.
 
 It has no ads, accounts or paid features. Everything is built from openly licensed or public-domain sources (see [Licences](#licences)).
 
-Status: **in development** (not yet on the App Store). The Xcode project and its folders are still called `GreekReader`.
+Status: **in development** (not yet on the App Store).
 
 ## Languages and texts
 
@@ -32,11 +32,11 @@ Parses come from hand-made treebanks where they exist: Perseus, Gorman, PROIEL, 
    pipeline/build.sh
    ```
    - The first run fetches the sources into `pipeline/sources/`, which takes several minutes.
-   - It writes `texts.db.z` (the default texts, compressed), `lexicon.db` and `catalog.json` into `app/GreekReader/Resources/Databases/`.
+   - It writes `texts.db.z` (the default texts, compressed), `lexicon.db` and `catalog.json` into `app/AncientLanguages/Resources/Databases/`.
    - It writes the downloadable modules into `pipeline/build/modules/`.
    - These locations are git-ignored.
    - A few sources have to be fetched by hand (Marcion's Coptic files, Autenrieth), and Morpheus is needed only when adding texts without a treebank. See [`pipeline/README.md`](pipeline/README.md).
-2. **Open `app/GreekReader.xcodeproj`** in Xcode 16 or later and run it on a simulator. To run on a device, first choose your team under *Signing & Capabilities*.
+2. **Open `app/AncientLanguages.xcodeproj`** in Xcode 16 or later and run it on a simulator. To run on a device, first choose your team under *Signing & Capabilities*.
 
 The app needs iOS 17 or later. It has no third-party Swift dependencies: it uses the system SQLite, Compression, CryptoKit and WebKit.
 
@@ -73,7 +73,7 @@ Publish before shipping: an app version can only download from the release for i
 
 ```
 pipeline/   Python: sources → texts, dictionaries, modules, catalogue (see pipeline/README.md)
-app/        SwiftUI app (folder-synchronised groups: files added under app/GreekReader/ are picked up automatically)
+app/        SwiftUI app (folder-synchronised groups: files added under app/AncientLanguages/ are picked up automatically)
 app/specs/  design notes
 ```
 
@@ -111,6 +111,6 @@ app/specs/  design notes
 
   The full credits are shown in the app, at the foot of each language's list, and in each release's `CREDITS.md`. Per-source details are in [`pipeline/README.md`](pipeline/README.md#licences).
 - **Build-time tools** (not distributed): Morpheus (MPL-2.0) and the Coptic SCRIPTORIUM NLP tools (Apache 2.0).
-- **Fonts:** under the SIL Open Font License, with the licence files in `app/GreekReader/Resources/Fonts/`:
+- **Fonts:** under the SIL Open Font License, with the licence files in `app/AncientLanguages/Resources/Fonts/`:
   - Gentium Book Plus (SIL International);
   - Noto Serif Hebrew and Noto Sans Coptic (Google).

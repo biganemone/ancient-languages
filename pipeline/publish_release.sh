@@ -12,7 +12,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 REPO=biganemone/ancient-languages
-catalog=../app/GreekReader/Resources/Databases/catalog.json
+catalog=../app/AncientLanguages/Resources/Databases/catalog.json
 modules=build/modules
 check_only=${1:-}
 

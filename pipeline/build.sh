@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Build the app's databases from Perseus / Logeion / Coptic sources.
 #   pipeline/build.sh            fetch sources (first run only) and build
-# Output: app/GreekReader/Resources/Databases/{texts,lexicon}.db (git-ignored)
+# Output: app/AncientLanguages/Resources/Databases/{texts,lexicon}.db (git-ignored)
 #
 # Parses for works without treebank data come from Morpheus. Its results are
 # cached in pipeline/data/morpheus_cache.tsv.gz (committed), so Morpheus is
@@ -11,7 +11,7 @@ set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 cd "$here"
 ./fetch_sources.sh
-out="$here/../app/GreekReader/Resources/Databases"
+out="$here/../app/AncientLanguages/Resources/Databases"
 mkdir -p "$out" build
 rm -f build/texts.db build/lexicon.db
 python3 build_texts.py sources/canonical-greekLit/data sources/treebank_data/v2.1/Greek/texts build/texts.db \

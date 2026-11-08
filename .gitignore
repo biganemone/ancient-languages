@@ -3,7 +3,7 @@ pipeline/sources/
 pipeline/build/
 pipeline/out/
 __pycache__/
-app/GreekReader/Resources/Databases/
+app/AncientLanguages/Resources/Databases/
 
 # Xcode
 xcuserdata/
@@ -14,3 +14,4 @@ DerivedData/
 
 # update packages from Claude
 greek-reader-update-*.tgz
+ancient-languages-update-*.tgz

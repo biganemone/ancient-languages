@@ -1,4 +1,4 @@
-"""Python twin of app/GreekReader/Study/FSRS.swift, for checking the numbers.
+"""Python twin of app/AncientLanguages/Study/FSRS.swift, for checking the numbers.
 
 Run: python fsrs_check.py   (prints a few review histories and asserts sanity)
 """

@@ -1,4 +1,4 @@
-# Ancient Languages Reader data pipeline
+# Ancient Languages data pipeline
 
 Builds the app's texts, dictionaries, downloadable modules and catalogue from Perseus, Logeion and the other sources below:
 

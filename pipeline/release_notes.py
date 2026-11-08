@@ -11,7 +11,7 @@ import sys
 from collections import Counter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-LIBRARY_VIEW = os.path.join(HERE, "..", "app", "GreekReader", "Library", "LibraryView.swift")
+LIBRARY_VIEW = os.path.join(HERE, "..", "app", "AncientLanguages", "Library", "LibraryView.swift")
 LANGUAGES = [("greek", "Greek"), ("latin", "Latin"), ("hebrew", "Hebrew"), ("sanskrit", "Sanskrit"),
              ("coptic", "Coptic"), ("oldEnglish", "Old English")]
 NAMES = {"grc": "Greek", "lat": "Latin", "hbo": "Hebrew", "san": "Sanskrit", "cop": "Coptic", "ang": "Old English"}
@@ -44,7 +44,7 @@ def main(catalog_path, notes_path, credits_path):
     with open(credits_path, "w", encoding="utf-8") as f:
         f.write(f"# Credits and licences (texts build {c['build']})\n\n{credits()}")
     with open(notes_path, "w", encoding="utf-8") as f:
-        f.write(f"""Texts for the Ancient Languages reader, build `{c['build']}`.
+        f.write(f"""Texts for the Ancient Languages app, build `{c['build']}`.
 
 These files are data, not code: one compressed SQLite module per text ({len(works)} texts, \
 {size / 1e6:.0f} MB in all: {", ".join(f"{n} {l}" for l, n in langs.most_common())}). \

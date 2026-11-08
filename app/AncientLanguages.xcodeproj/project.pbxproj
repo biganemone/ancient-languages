@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		A10000000000000000000001 /* GreekReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GreekReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000000000000000000001 /* AncientLanguages.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AncientLanguages.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		A10000000000000000000002 /* GreekReader */ = {
+		A10000000000000000000002 /* AncientLanguages */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = GreekReader;
+			path = AncientLanguages;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		A10000000000000000000004 = {
 			isa = PBXGroup;
 			children = (
-				A10000000000000000000002 /* GreekReader */,
+				A10000000000000000000002 /* AncientLanguages */,
 				A10000000000000000000005 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -40,7 +40,7 @@
 		A10000000000000000000005 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A10000000000000000000001 /* GreekReader.app */,
+				A10000000000000000000001 /* AncientLanguages.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A10000000000000000000006 /* GreekReader */ = {
+		A10000000000000000000006 /* AncientLanguages */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A10000000000000000000010 /* Build configuration list for PBXNativeTarget "GreekReader" */;
+			buildConfigurationList = A10000000000000000000010 /* Build configuration list for PBXNativeTarget "AncientLanguages" */;
 			buildPhases = (
 				A10000000000000000000007 /* Sources */,
 				A10000000000000000000003 /* Frameworks */,
@@ -61,13 +61,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				A10000000000000000000002 /* GreekReader */,
+				A10000000000000000000002 /* AncientLanguages */,
 			);
-			name = GreekReader;
+			name = AncientLanguages;
 			packageProductDependencies = (
 			);
-			productName = GreekReader;
-			productReference = A10000000000000000000001 /* GreekReader.app */;
+			productName = AncientLanguages;
+			productReference = A10000000000000000000001 /* AncientLanguages.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -85,7 +85,7 @@
 					};
 				};
 			};
-			buildConfigurationList = A10000000000000000000013 /* Build configuration list for PBXProject "GreekReader" */;
+			buildConfigurationList = A10000000000000000000013 /* Build configuration list for PBXProject "AncientLanguages" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A10000000000000000000006 /* GreekReader */,
+				A10000000000000000000006 /* AncientLanguages */,
 			);
 		};
 /* End PBXProject section */
@@ -133,7 +133,7 @@
 				DEVELOPMENT_TEAM = S2CJQL95L3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Greek Reader";
+				INFOPLIST_KEY_CFBundleDisplayName = "Ancient Languages";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -144,7 +144,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = edu.cmu.greekreader;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.biganemone.ancientlanguages;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -160,7 +160,7 @@
 				DEVELOPMENT_TEAM = S2CJQL95L3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Greek Reader";
+				INFOPLIST_KEY_CFBundleDisplayName = "Ancient Languages";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -171,7 +171,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = edu.cmu.greekreader;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.biganemone.ancientlanguages;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -231,7 +231,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A10000000000000000000010 /* Build configuration list for PBXNativeTarget "GreekReader" */ = {
+		A10000000000000000000010 /* Build configuration list for PBXNativeTarget "AncientLanguages" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A10000000000000000000011 /* Debug */,
@@ -240,7 +240,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A10000000000000000000013 /* Build configuration list for PBXProject "GreekReader" */ = {
+		A10000000000000000000013 /* Build configuration list for PBXProject "AncientLanguages" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A10000000000000000000014 /* Debug */,

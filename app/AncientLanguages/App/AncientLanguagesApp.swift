@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct GreekReaderApp: App {
+struct AncientLanguagesApp: App {
     @State private var library = Library()
     @State private var catalog = Catalog.load()
     @State private var modules: ModuleManager?
