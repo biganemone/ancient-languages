@@ -40,6 +40,20 @@ struct LibraryView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+                if !searching, !modules.pending.isEmpty {
+                    Section {
+                        let pending = modules.pending
+                        Button {
+                            modules.add(pending)
+                        } label: {
+                            Label("Download \(pending.count == 1 ? "1 text" : "\(pending.count) texts") again",
+                                  systemImage: "arrow.down.circle")
+                        }
+                        .disabled(pending.allSatisfy { modules.status[$0.urn] != nil })
+                    } footer: {
+                        Text("This version of the app has new editions of the texts, so texts you downloaded need downloading again.")
+                    }
+                }
                 if !searching {
                     languageTabs
                         .listRowBackground(Color.clear)

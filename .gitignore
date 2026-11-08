@@ -11,3 +11,6 @@ xcuserdata/
 DerivedData/
 .build/
 .DS_Store
+
+# update packages from Claude
+greek-reader-update-*.tgz

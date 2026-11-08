@@ -79,8 +79,12 @@ python3 export_module.py build/texts_app.db build/texts_default.db --defaults --
 rm -f "$out/texts.db"
 # a downloadable module per work, and the catalog of every text on offer
 python3 make_modules.py build/texts_app.db build/modules
+# the modules are published as a GitHub Release per build (publish_release.sh);
+# set DOWNLOADS_URL= (empty) for a build that won't be published
+release_url='https://github.com/biganemone/ancient-languages/releases/download/texts-{build}'
 python3 make_catalog.py build/texts_app.db build/texts_default.db build/modules "$out/catalog.json" \
-  "${DOWNLOADS_URL:-}"
+  "${DOWNLOADS_URL-$release_url}"
 cp build/lexicon.db "$out/"
-echo "Built: $(du -h "$out"/*.db | tr '\n' ' ')"
+echo "Built: $(du -h "$out"/*.db "$out"/*.db.z | tr '\n' ' ')"
+echo "Next: pipeline/publish_release.sh, then build the app in Xcode"
 echo "Reports: pipeline/build/*_report.json"
