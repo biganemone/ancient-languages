@@ -1,6 +1,6 @@
-# Greek Reader data pipeline
+# Ancient Languages Reader data pipeline
 
-Builds the app's two databases from Perseus, Logeion and Coptic sources:
+Builds the app's texts, dictionaries, downloadable modules and catalogue from Perseus, Logeion and the other sources below:
 
 - Perseus TEI texts and translations become aligned Greek/English blocks.
 - Words get parses: from the Perseus treebank (or Vanessa Gorman's treebanks) where they exist, otherwise from Morpheus.
@@ -11,7 +11,9 @@ Builds the app's two databases from Perseus, Logeion and Coptic sources:
   SCRIPTORIUM NLP tools; lemmas linked to the Comprehensive Coptic Lexicon and Crum.
 
 ```
-./build.sh          # fetch sources (first run), build texts.db + lexicon.db into the app
+./build.sh             # fetch sources (first run), build texts.db.z + lexicon.db + catalog.json into the app,
+                       # and the modules into build/modules/
+./publish_release.sh   # publish the modules as this build's GitHub Release (see the top-level README)
 ```
 
 The only Python dependency is `lxml`; Python 3.10 or later is needed. `works.py` lists the texts. Add a work there and re-run.
@@ -36,7 +38,6 @@ The only Python dependency is `lxml`; Python 3.10 or later is needed. `works.py`
 | `latin.py` | Latin lookup keys (case, macrons, æ/œ, i/j, u/v ignored), the tokenizer, PROIEL → AGDT tags. |
 | `build_latin.py` | Adds the Aeneid (Perseus; treebank for 6.1–295, Morpheus for the rest) and the Clementine Vulgate with the Douay-Rheims (PROIEL treebank for most of the NT, Morpheus elsewhere), and the `parallel` verse map Vulgate ↔ LXX / Greek NT, aligned through the two English translations. Runs after `build_lxx.py` and `build_nt.py`. Also (PERSEUS_LATIN) Caesar's Gallic War (PROIEL treebank for much of Books 1–6), Ovid's Metamorphoses, Cicero's In Catilinam and De Amicitia, and Tacitus's Agricola, Germania and Annals 1, from Perseus, with the AGLDT treebank where it covers them. |
 | `build_sahidic.py` | Adds the Sahidic New Testament: Sahidic Bible 2 (the INTF's transcriptions of the main manuscripts, CC BY-SA), with Horner's text (`data/horner_sahidic_nt.tsv.gz`, extracted from the CrossWire module CopSahHorner, public domain) for the verses it lacks; Coptic SCRIPTORIUM NLP analyses cached in `data/coptic_nlp/sahidic-bible-2.json.gz` (`analyse` mode refreshes them); BSB English; verse links to the Greek NT. |
-| `export_module.py` | Exports chosen works (by URN, author or language) from `texts_app.db` as a standalone module file with everything they refer to: a first step towards downloadable modules, and a way to size candidate groupings. |
 | `build_oldenglish.py` | Adds Old English: *Beowulf* (Klaeber's text, Garnett's line-for-line translation; Perseus, CC BY-SA), in sentence blocks; lemmas and parses from Klaeber's glossary, which cites nearly every word by line (`oldenglish.py`). |
 | `aspr.py`, `oe_forms.py` | The rest of the Old English poetry (ASPR, Hidley's e-text via CLTK), grouped by manuscript, and its automatic lemmas/parses: Beowulf's analyses, then Tichý's generated forms of Bosworth–Toller headwords (`data/oe_forms.tsv.gz`, CC BY 4.0), ranked by corpus lemma frequency (EM). |
 | `oe_translations.py` | Public-domain English for 31 of the poems (Faust & Thompson, Garnett, Root, Pitman; Project Gutenberg, saved by browser), cut into numbered lines: `data/oe_translations.json.gz`, read by `build_oldenglish.py`. |
@@ -44,6 +45,13 @@ The only Python dependency is `lxml`; Python 3.10 or later is needed. `works.py`
 | `build_sanskrit.py`, `sanskrit.py` | The Bhagavad Gītā: the Digital Corpus of Sanskrit's text and analyses (CC BY 4.0), aligned letter by letter with gita/gita's numbered text for verse and half-verse divisions; sandhi groups split as a printed IAST text would, each piece a token whose words are morph rows; Besant's English (1922, `data/besant_gita.json.gz`, from Wikisource). Lexica: Macdonell (whole) and Monier-Williams (entries the lemmas reach), Cologne CC BY-SA 4.0; short glosses from the DCS lemma dictionary. |
 | `build_upanishads.py`, `upanishad_editions.py` | Kaṭha, Muṇḍaka, Taittirīya, Aitareya, Chāndogya, Bṛhadāraṇyaka and Śvetāśvatara Upaniṣads from DCS, sectioned by DCS's counters (Kaṭha) or by alignment with numbered texts (Śaṅkara's commentaries' mūla, from the DCS repository's GRETIL folder; Sanskrit Wikisource for Muṇḍaka and Śvetāśvatara, `data/upanishads_sa_wikisource.json.gz`); Müller's English (SBE 1, 15; `data/upanishads_muller.json.gz`, from sacred-texts.com). |
 | `build_lexicon.py` | Builds `lexicon.db`: entries stored as raw DEFLATE (Apple's `COMPRESSION_ZLIB`), short definitions, and a `resolve` table from every lemma to its entries. It also prints a coverage report. |
+| `defaults.py` | The texts the app ships with (by URN, author or language); everything else becomes a download. |
+| `stamp_build.py` | Gives the full build (`texts_app.db`) its build id, in a `meta` table that every export copies. |
+| `export_module.py` | Exports chosen works (by URN, author or language, or `--defaults`) as a standalone database with everything they refer to, keeping the full build's row ids so the app can copy them into its library. `--deflate` also writes the raw-DEFLATE copy the app bundles (`texts.db.z`). |
+| `make_modules.py` | One downloadable module per work in `build/modules/` (`<id>.db.z`), and `modules.json` with sizes and SHA-256s. Resumable (`--max-seconds`). |
+| `make_catalog.py` | `catalog.json`: every work, whether it ships, its module, size and checksum, the build id, and the download URL (`{build}` filled in). |
+| `release_notes.py`, `publish_release.sh` | Publish the modules as the GitHub Release `texts-<build>` (see the top-level README, *Publishing texts*). |
+| `tests/check_modules.py` | Repeats the app's add/remove SQL on a copy of the library, to check modules before publishing. |
 
 ## Alignment
 
@@ -110,3 +118,8 @@ more errors in the Lycopolitan texts (NHC I, X, XI).
 - Coptic SCRIPTORIUM texts: CC BY (per document); their NLP tools: Apache 2.0, build time only.
 - Comprehensive Coptic Lexicon (KELLIA): CC BY-SA 4.0.
 - Marcion texts and Crum (Milan Konvička): GPL v2. Credit Marcion wherever its material appears.
+- Westminster Leningrad Codex: public domain. Open Scriptures Hebrew Bible (morphology) and Hebrew Lexicon (BDB, Strong's): CC BY 4.0. STEPBible TBESH glosses: CC BY 4.0.
+- Digital Corpus of Sanskrit (Oliver Hellwig): CC BY 4.0. gita/gita verse numbering: the Unlicense. GRETIL mūla texts and Sanskrit Wikisource: used for numbering and the few missing passages.
+- Cologne Digital Sanskrit Dictionaries (Macdonell, Monier-Williams): CC BY-SA 4.0.
+- Besant's Gītā (1922, Wikisource), Müller's Upaniṣads (SBE 1, 15; sacred-texts.com), Long's Marcus Aurelius (1862, Project Gutenberg): public domain.
+- Beowulf (Klaeber's text and glossary, Garnett's translation; Perseus): CC BY-SA. ASPR e-text (Greg Hidley, Oxford Text Archive, via CLTK): CC BY-SA. Tichý's Old English forms: CC BY 4.0. Bosworth–Toller (Germanic Lexicon Project): public domain; btc_anglo_saxon: MIT. Old English translations from Project Gutenberg: public domain.
