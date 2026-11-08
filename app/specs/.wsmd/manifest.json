@@ -1,0 +1,36 @@
+{
+  "formatVersion" : 1,
+  "nodes" : [
+    {
+      "id" : "c52738e7-25d5-4a40-896b-cfb2b302db9e",
+      "includeInExport" : true,
+      "kind" : "document",
+      "path" : "flashcards.md",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "43913231-acfb-4487-8ce7-7c8d4ad66849",
+      "includeInExport" : true,
+      "kind" : "document",
+      "path" : "text and languages.md",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    }
+  ],
+  "order" : {
+    "root" : [
+      "c52738e7-25d5-4a40-896b-cfb2b302db9e",
+      "43913231-acfb-4487-8ce7-7c8d4ad66849"
+    ]
+  },
+  "projectID" : "8fdf4514-4c06-4b7f-86ea-f01d95fe1ded",
+  "settings" : {
+
+  },
+  "title" : "specs"
+}

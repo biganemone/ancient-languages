@@ -1,0 +1,1765 @@
+{
+  "formatVersion" : 1,
+  "nodes" : [
+    {
+      "id" : "61b3b44d-d6e5-45ea-8cad-16af56fc81ad",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "Claude outputs",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "c9d2f3eb-836f-4dcf-be33-5515aace469d",
+      "includeInExport" : true,
+      "kind" : "document",
+      "path" : "README.md",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "8d31e283-48bd-4cd7-bde2-6ec5ad26524a",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "baca682f-bb62-4ee0-8a6d-d3076b4f6c3f",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "743c8051-787a-4c05-9231-b9b3203e3371",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader.xcodeproj",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "a22e8021-d4e7-4c80-8ea2-6dd6b0e3d07f",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader.xcodeproj/project.xcworkspace",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "3d2964d8-6a3d-45ac-ae62-f1af2727e640",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader.xcodeproj/project.xcworkspace/xcshareddata",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "d2309e5e-9a11-4f8a-8497-9d54e0406de8",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader.xcodeproj/project.xcworkspace/xcshareddata/swiftpm",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "73abc968-00c6-41a3-bdd4-ed96f46614ae",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/configuration",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "a4dd2178-ad55-4674-884d-066292f4313b",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader.xcodeproj/project.xcworkspace/xcuserdata",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "f787cff1-88c8-4086-b9fc-c0ea30ac8515",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader.xcodeproj/project.xcworkspace/xcuserdata/adamjohns.xcuserdatad",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "119b4900-0074-45a7-86bd-fe68cfe2f053",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader.xcodeproj/xcuserdata",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "2ef0e094-096a-4ae3-943d-1cc4adaa1632",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader.xcodeproj/xcuserdata/adamjohns.xcuserdatad",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "b1f5009d-e486-47bc-b807-5c41c9bc11a0",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader.xcodeproj/xcuserdata/adamjohns.xcuserdatad/xcschemes",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "7ba7d818-1371-489a-8641-d77f87cf8a2a",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader/App",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "372b2036-70b2-40a7-9e9e-1cbef4ba086a",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader/Data",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "c2b11f7d-8c5c-4e06-a3e3-8768ae7102fc",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader/Library",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "4c2f93a7-600a-4221-b3f3-f12b3f88b93b",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader/Reader",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "ccadafeb-498b-4c3d-abdd-0a715b0498a9",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader/Resources",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "742c94fe-04d0-4efb-923e-2a318c557457",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader/Resources/Databases",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "d9cf779b-8c8a-4ccc-9447-62f293169a60",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader/Resources/Fonts",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "4970a61e-7acc-4daa-9766-fa75f6df6d95",
+      "includeInExport" : true,
+      "kind" : "document",
+      "path" : "app/GreekReader/Resources/Fonts/Gentium-OFL.txt",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "80781b3d-6c04-430a-90d2-eb5c53731b40",
+      "includeInExport" : true,
+      "kind" : "document",
+      "path" : "app/GreekReader/Resources/Fonts/NotoSansCoptic-OFL.txt",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "e20431fe-ca78-4abf-95b4-56d549d7322c",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader/Study",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "94897d57-77eb-4846-aa58-c74eea3b0e53",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/GreekReader/Support",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "a5909fea-2422-42a5-84ae-39d99447cacf",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "app/specs",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "b9c88032-bf75-429c-af8a-7abaf82799fe",
+      "includeInExport" : true,
+      "kind" : "document",
+      "path" : "app/specs/flashcards.md",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "8bf7a0be-5ad6-4d64-b9bf-cdcee7cbcbd3",
+      "includeInExport" : true,
+      "kind" : "document",
+      "path" : "app/specs/text and languages.md",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "94c12cf7-7a01-4db0-ba1c-0e0e2218eadc",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "97eed053-f50d-466c-a8df-5bb757172b47",
+      "includeInExport" : true,
+      "kind" : "document",
+      "path" : "pipeline/README.md",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "0f4dfaf2-72ce-48ef-b35e-3ce8ed08526b",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/__pycache__",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "3407820a-a354-4ac0-9668-163641834ae3",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/build",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "f4849029-a49b-4b3f-ac45-703412129478",
+      "includeInExport" : true,
+      "kind" : "document",
+      "path" : "pipeline/build/texts_log.txt",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "5de9307a-0ebd-4a82-aa13-142780e7e2a3",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/data",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "c4d44cb9-4c70-4c5e-a664-f541362aa3e3",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/data/coptic_nlp",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "50e1d9a3-a386-4d9f-9fdf-42339f95b5db",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "10b10fe0-0c9d-43d5-80c1-b2f1ea2795db",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/LSJLogeion",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "bb27b481-8b90-415c-8e42-03a6baf96a23",
+      "includeInExport" : true,
+      "kind" : "document",
+      "path" : "pipeline/sources/LSJLogeion/LICENSE.md",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "d6ef7ac5-c80b-4dda-9c2c-221178993cea",
+      "includeInExport" : true,
+      "kind" : "document",
+      "path" : "pipeline/sources/LSJLogeion/README.md",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "f55d62e2-e0ab-406e-8dca-c602defcd677",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/MiddleLiddell",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "522274f0-0739-4d06-9992-455499e7bc76",
+      "includeInExport" : true,
+      "kind" : "document",
+      "path" : "pipeline/sources/MiddleLiddell/README.md",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "d1e51baf-1b79-4d6b-a255-98e065a854bc",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/autenrieth",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "0aba97a0-281e-4fdc-b2d6-46113e1fc698",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "35a1622a-a9e1-4933-b980-ad236ec098dd",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "2c840529-d8d6-489e-81a1-42d438c4d80f",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0011",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "7d1f9f07-462c-4eb6-87d0-f534920c1d23",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0011/tlg001",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "a9a4f438-061b-4d62-9a97-6cb37fc5621c",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0011/tlg002",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "8c1d0056-2383-47e0-8d99-1042432d2e03",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0011/tlg003",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "3fb457a5-1c4e-4769-adfe-77147c237a79",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0011/tlg004",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "a8a403df-b1e2-4256-b0d5-386caf287170",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0011/tlg005",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "8372762e-ad93-41f3-aed4-cb54862df15b",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0011/tlg006",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "93703db1-f88e-4d93-830c-c39c25eee89e",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0011/tlg007",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "682b181c-edb2-4ecb-9d0f-7bc1721040d4",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0012",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "a008930b-2814-406c-8757-dc6fa3cb412a",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0012/tlg001",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "0227555c-ca43-4e6d-9f3a-6d31f1ce9952",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0012/tlg002",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "835c9cab-07eb-428f-ae2f-94d7694fc256",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "a6be62c5-4379-4794-9f54-93156f8f2c9e",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg001",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "bdac22e5-0e06-4641-bd70-5f71b50cb2c6",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg002",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "20cb2b72-d1ac-4686-b45f-5e78766c3e33",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg003",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "f74a33f9-3433-40b5-ba37-2da1591fe930",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg004",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "5dc5ffd1-7691-4fa6-b95b-d5d40793c3b9",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg005",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "c8980765-4adf-4022-aac1-10adf8439f96",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg006",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "55cb7b13-a445-4e6d-85ae-670aee393b79",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg007",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "7b2f43ee-63f0-4053-9472-0b7d12386db9",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg008",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "c2c2f423-6b03-4bb4-bc12-061be4a41e48",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg009",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "d71423d7-2d01-40ef-a576-f84e66248545",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg010",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "df1ce3f8-56e7-41be-9f34-b7065477b353",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg011",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "45f5e5a4-d320-42f3-8b89-75c33b594317",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg012",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "6ffe4b5a-500e-4dd8-bb01-aba40388b8b0",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg013",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "7b7e3434-ad60-4795-b838-a3dd9409b545",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg014",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "0881f51b-19e8-4d39-ad8c-28e98bc61c4c",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg015",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "8b2ee583-3bd7-483b-a89a-12c5af767a56",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg016",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "27946ff2-f173-49ce-8268-6c03eac5e2fe",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg017",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "391e94b6-c974-49ab-82c7-563b79d64027",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg018",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "62cc6aad-c00d-4143-97e6-7da0b719c753",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg019",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "34163f8f-a0e4-4469-b9dc-f1305d722bf9",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg020",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "1c5d55d6-bc22-40be-a600-bb5087685996",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg021",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "c2095ed7-2ffa-4b59-8bca-a65a8192d895",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg022",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "fc488530-2311-4d66-8705-578fbae4f556",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg023",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "ed0d4b8f-185e-48d9-9de8-1141af5ce70c",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg024",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "29e0fb1f-72ae-4368-a146-8f94424f5670",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg025",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "838eff69-b44f-4b53-8445-ba9646a8f285",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg026",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "cafeac18-2c4e-4710-834f-a62e2aef6c1e",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg027",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "064e8247-f3c1-4cef-96c0-c9af43d07827",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg028",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "8256a58d-0998-40f8-8b4d-0c0f3f048dd1",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg029",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "274df29f-3ef6-464c-a32d-290a0898c096",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg030",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "6b66346d-62d5-4b24-9a57-f0787e646737",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg031",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "e445e78b-1132-4124-bc7a-36d12fa8cb24",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg032",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "d28ea2f7-8494-44fc-8d24-355b2e3f1443",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0013/tlg033",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "5222450e-5540-44ac-80d0-3239e949fa40",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0016",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "6d424a8d-ad3b-4726-a402-d97c28e88862",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0016/tlg001",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "b9b177ff-1803-4102-b5f6-88adb9887414",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0020",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "caa738c5-72a8-457d-8c04-e4addedbdc5a",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0020/tlg001",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "37086d2b-dd1f-40ca-95ed-ad8a211f12a4",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0020/tlg002",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "3503fb5c-635b-48d3-bb21-7e6e101b990e",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0020/tlg003",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "8b46cb2e-8077-4ad3-b4bb-0cdc3c4b6f6f",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "f4043240-bb9e-4629-bd94-c485d3e49894",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg001",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "d3b49183-f297-4c3f-b54c-6a4487e23872",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg002",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "aef51812-c653-4135-9629-0cead0d5236c",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg003",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "b6920712-7806-4b19-89f9-7434a56e1cb4",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg004",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "4bc5a594-f5b0-4446-9ec3-1a507e9f8316",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg005",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "e3b0d327-f207-4011-b6bc-6be30ad47b31",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg006",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "dc13ed21-f1ad-4ac7-9428-e29c5ef0473a",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg007",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "142d8e94-90b5-4cd8-88ef-d6e769e0c87b",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg008",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "44526a1d-cfd9-485b-9b2e-c3c5e22d81a6",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg009",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "d4016174-45a1-461d-8a54-e0e1e9b4dd49",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg010",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "19709df3-ec05-46dc-9a0a-9afd3ce86364",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg011",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "e12c75ed-29e6-4a41-aa4c-3a329d70ca66",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg012",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "ab3673f8-fe0c-4df2-8de2-338e18ef191a",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg013",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "3dee4c34-d745-4cf2-aa45-656bd69b63bb",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg014",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "5e097fbb-de34-4c23-8636-b99901bce9cd",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg015",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "22ff5f89-d799-46f4-89bb-000836daf483",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg016",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "b9e7de50-4f5f-42ed-95d1-c20db4ccc1b3",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg017",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "d89a9e38-a7c9-4a31-af70-55aac6dec2c3",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg018",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "465085ed-8c5a-4c96-be97-81a530d7f235",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg019",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "49330356-afe2-47aa-9f7e-baf37aa2dd79",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg020",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "7f61f89a-ece3-4ec1-be48-7efcfbb20e10",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg021",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "a66ba045-a8eb-4d46-bb49-7495268a7253",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg022",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "bb285850-b40f-487f-9e6b-6d7ca21ed321",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg023",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "8bb73d29-fdaf-4c95-af5b-7797a19d5a01",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg024",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "ef834657-1e60-443b-aeff-05e238e9aaa6",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg025",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "5ed3ab22-6432-43ce-96e6-dcccfe0b6df6",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg026",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "959902f9-1b59-438a-a3ba-9da6bfccdf29",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg027",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "bf560f68-12ff-458f-9d23-342190f1c8c2",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg028",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "76624855-97f2-4985-8c4c-22f3793a1b07",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg029",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "a01429ba-c8ca-4931-9f36-a7949c123a84",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg030",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "cd5989d4-1c1c-4969-ad91-3e8f2cec3552",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg031",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "ebd7d3cc-aa9a-4ff5-821c-b496cf6ebbf7",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg032",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "b46b3a7a-efa1-4cbb-9074-d4c0089bb916",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg033",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "7482ff94-49f7-4706-a51a-0de3dbecc7db",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg034",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "7d89a6ae-bd40-4d51-8a5a-64ca217cc641",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg035",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "999afad5-8be5-412a-a357-ba16475d48b6",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0059/tlg036",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "1a0c480f-771d-4102-a1e0-f9569a6900a9",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0085",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "575d48d1-6063-49d3-a40d-e44799e28f64",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0085/tlg001",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "66872da9-d1cb-4ab4-8d97-13647d97106a",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0085/tlg002",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "ef8eb93b-c964-4786-bdb9-184000b8ec88",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0085/tlg003",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "c5f351c7-656d-45cd-86aa-44c4c5537040",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0085/tlg004",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "89203517-e70a-4802-83fa-bc1bb9101e5c",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0085/tlg005",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "8336f6a7-e3f2-4858-910c-fcde82a5ef55",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0085/tlg006",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "4e9c5d6c-87b4-4f7e-807a-681817bfd6b7",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/canonical-greekLit/data/tlg0085/tlg007",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "2751782d-e0ef-44d6-a4e2-b7a5610d11de",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/coptic-scriptorium",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "8c5bc7b1-a6da-4de8-b5ad-d5f2c1f9e52c",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/coptic-scriptorium/thomas-gospel",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "50ae9d2b-b2eb-4a81-8e32-fbf53373a499",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/coptic-scriptorium/thomas-gospel/thomas.gospel_TT",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "55f84218-9c4b-4291-bd79-50e3f5847dea",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/kellia-dictionary",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "8b611df9-d966-4017-b15d-75577b087f82",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/kellia-dictionary/xml",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "f586ba36-09f4-409d-879b-8672e6014b6f",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/marcion",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "418250b6-28e7-40f5-9d08-ee286ea503f6",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/shortdefs",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "b654c56a-9444-4011-84f8-33f5455eb066",
+      "includeInExport" : true,
+      "kind" : "document",
+      "path" : "pipeline/sources/shortdefs/LogeionLatinshortdefs.txt",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "d39d5be9-46fc-4c63-bd2a-a244b0fe2afc",
+      "includeInExport" : true,
+      "kind" : "document",
+      "path" : "pipeline/sources/shortdefs/README.md",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "6c52627f-d4be-48e9-9c68-dfad31fd1208",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/treebank_data",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "f69e3e25-7082-42e6-9264-717a4faa131e",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/treebank_data/v2.1",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "369d5ca5-8c43-44e7-a5ed-cd7fdca314f6",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/treebank_data/v2.1/Greek",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    },
+    {
+      "id" : "8e5c3a55-6cc7-4100-afd2-94db9cf4e5b0",
+      "includeInExport" : true,
+      "kind" : "folder",
+      "path" : "pipeline/sources/treebank_data/v2.1/Greek/texts",
+      "synopsis" : "",
+      "tags" : [
+
+      ]
+    }
+  ],
+  "order" : {
+    "0aba97a0-281e-4fdc-b2d6-46113e1fc698" : [
+      "35a1622a-a9e1-4933-b980-ad236ec098dd"
+    ],
+    "10b10fe0-0c9d-43d5-80c1-b2f1ea2795db" : [
+      "bb27b481-8b90-415c-8e42-03a6baf96a23",
+      "d6ef7ac5-c80b-4dda-9c2c-221178993cea"
+    ],
+    "119b4900-0074-45a7-86bd-fe68cfe2f053" : [
+      "2ef0e094-096a-4ae3-943d-1cc4adaa1632"
+    ],
+    "1a0c480f-771d-4102-a1e0-f9569a6900a9" : [
+      "575d48d1-6063-49d3-a40d-e44799e28f64",
+      "66872da9-d1cb-4ab4-8d97-13647d97106a",
+      "ef8eb93b-c964-4786-bdb9-184000b8ec88",
+      "c5f351c7-656d-45cd-86aa-44c4c5537040",
+      "89203517-e70a-4802-83fa-bc1bb9101e5c",
+      "8336f6a7-e3f2-4858-910c-fcde82a5ef55",
+      "4e9c5d6c-87b4-4f7e-807a-681817bfd6b7"
+    ],
+    "2751782d-e0ef-44d6-a4e2-b7a5610d11de" : [
+      "8c5bc7b1-a6da-4de8-b5ad-d5f2c1f9e52c"
+    ],
+    "2c840529-d8d6-489e-81a1-42d438c4d80f" : [
+      "7d1f9f07-462c-4eb6-87d0-f534920c1d23",
+      "a9a4f438-061b-4d62-9a97-6cb37fc5621c",
+      "8c1d0056-2383-47e0-8d99-1042432d2e03",
+      "3fb457a5-1c4e-4769-adfe-77147c237a79",
+      "a8a403df-b1e2-4256-b0d5-386caf287170",
+      "8372762e-ad93-41f3-aed4-cb54862df15b",
+      "93703db1-f88e-4d93-830c-c39c25eee89e"
+    ],
+    "2ef0e094-096a-4ae3-943d-1cc4adaa1632" : [
+      "b1f5009d-e486-47bc-b807-5c41c9bc11a0"
+    ],
+    "3407820a-a354-4ac0-9668-163641834ae3" : [
+      "f4849029-a49b-4b3f-ac45-703412129478"
+    ],
+    "35a1622a-a9e1-4933-b980-ad236ec098dd" : [
+      "2c840529-d8d6-489e-81a1-42d438c4d80f",
+      "682b181c-edb2-4ecb-9d0f-7bc1721040d4",
+      "835c9cab-07eb-428f-ae2f-94d7694fc256",
+      "b9b177ff-1803-4102-b5f6-88adb9887414",
+      "8b46cb2e-8077-4ad3-b4bb-0cdc3c4b6f6f",
+      "5222450e-5540-44ac-80d0-3239e949fa40",
+      "1a0c480f-771d-4102-a1e0-f9569a6900a9"
+    ],
+    "369d5ca5-8c43-44e7-a5ed-cd7fdca314f6" : [
+      "8e5c3a55-6cc7-4100-afd2-94db9cf4e5b0"
+    ],
+    "3d2964d8-6a3d-45ac-ae62-f1af2727e640" : [
+      "d2309e5e-9a11-4f8a-8497-9d54e0406de8"
+    ],
+    "418250b6-28e7-40f5-9d08-ee286ea503f6" : [
+      "b654c56a-9444-4011-84f8-33f5455eb066",
+      "d39d5be9-46fc-4c63-bd2a-a244b0fe2afc"
+    ],
+    "50e1d9a3-a386-4d9f-9fdf-42339f95b5db" : [
+      "d1e51baf-1b79-4d6b-a255-98e065a854bc",
+      "0aba97a0-281e-4fdc-b2d6-46113e1fc698",
+      "2751782d-e0ef-44d6-a4e2-b7a5610d11de",
+      "55f84218-9c4b-4291-bd79-50e3f5847dea",
+      "10b10fe0-0c9d-43d5-80c1-b2f1ea2795db",
+      "f586ba36-09f4-409d-879b-8672e6014b6f",
+      "f55d62e2-e0ab-406e-8dca-c602defcd677",
+      "418250b6-28e7-40f5-9d08-ee286ea503f6",
+      "6c52627f-d4be-48e9-9c68-dfad31fd1208"
+    ],
+    "5222450e-5540-44ac-80d0-3239e949fa40" : [
+      "6d424a8d-ad3b-4726-a402-d97c28e88862"
+    ],
+    "55f84218-9c4b-4291-bd79-50e3f5847dea" : [
+      "8b611df9-d966-4017-b15d-75577b087f82"
+    ],
+    "5de9307a-0ebd-4a82-aa13-142780e7e2a3" : [
+      "c4d44cb9-4c70-4c5e-a664-f541362aa3e3"
+    ],
+    "682b181c-edb2-4ecb-9d0f-7bc1721040d4" : [
+      "a008930b-2814-406c-8757-dc6fa3cb412a",
+      "0227555c-ca43-4e6d-9f3a-6d31f1ce9952"
+    ],
+    "6c52627f-d4be-48e9-9c68-dfad31fd1208" : [
+      "f69e3e25-7082-42e6-9264-717a4faa131e"
+    ],
+    "743c8051-787a-4c05-9231-b9b3203e3371" : [
+      "a22e8021-d4e7-4c80-8ea2-6dd6b0e3d07f",
+      "119b4900-0074-45a7-86bd-fe68cfe2f053"
+    ],
+    "835c9cab-07eb-428f-ae2f-94d7694fc256" : [
+      "a6be62c5-4379-4794-9f54-93156f8f2c9e",
+      "bdac22e5-0e06-4641-bd70-5f71b50cb2c6",
+      "20cb2b72-d1ac-4686-b45f-5e78766c3e33",
+      "f74a33f9-3433-40b5-ba37-2da1591fe930",
+      "5dc5ffd1-7691-4fa6-b95b-d5d40793c3b9",
+      "c8980765-4adf-4022-aac1-10adf8439f96",
+      "55cb7b13-a445-4e6d-85ae-670aee393b79",
+      "7b2f43ee-63f0-4053-9472-0b7d12386db9",
+      "c2c2f423-6b03-4bb4-bc12-061be4a41e48",
+      "d71423d7-2d01-40ef-a576-f84e66248545",
+      "df1ce3f8-56e7-41be-9f34-b7065477b353",
+      "45f5e5a4-d320-42f3-8b89-75c33b594317",
+      "6ffe4b5a-500e-4dd8-bb01-aba40388b8b0",
+      "7b7e3434-ad60-4795-b838-a3dd9409b545",
+      "0881f51b-19e8-4d39-ad8c-28e98bc61c4c",
+      "8b2ee583-3bd7-483b-a89a-12c5af767a56",
+      "27946ff2-f173-49ce-8268-6c03eac5e2fe",
+      "391e94b6-c974-49ab-82c7-563b79d64027",
+      "62cc6aad-c00d-4143-97e6-7da0b719c753",
+      "34163f8f-a0e4-4469-b9dc-f1305d722bf9",
+      "1c5d55d6-bc22-40be-a600-bb5087685996",
+      "c2095ed7-2ffa-4b59-8bca-a65a8192d895",
+      "fc488530-2311-4d66-8705-578fbae4f556",
+      "ed0d4b8f-185e-48d9-9de8-1141af5ce70c",
+      "29e0fb1f-72ae-4368-a146-8f94424f5670",
+      "838eff69-b44f-4b53-8445-ba9646a8f285",
+      "cafeac18-2c4e-4710-834f-a62e2aef6c1e",
+      "064e8247-f3c1-4cef-96c0-c9af43d07827",
+      "8256a58d-0998-40f8-8b4d-0c0f3f048dd1",
+      "274df29f-3ef6-464c-a32d-290a0898c096",
+      "6b66346d-62d5-4b24-9a57-f0787e646737",
+      "e445e78b-1132-4124-bc7a-36d12fa8cb24",
+      "d28ea2f7-8494-44fc-8d24-355b2e3f1443"
+    ],
+    "8b46cb2e-8077-4ad3-b4bb-0cdc3c4b6f6f" : [
+      "f4043240-bb9e-4629-bd94-c485d3e49894",
+      "d3b49183-f297-4c3f-b54c-6a4487e23872",
+      "aef51812-c653-4135-9629-0cead0d5236c",
+      "b6920712-7806-4b19-89f9-7434a56e1cb4",
+      "19709df3-ec05-46dc-9a0a-9afd3ce86364",
+      "a01429ba-c8ca-4931-9f36-a7949c123a84",
+      "4bc5a594-f5b0-4446-9ec3-1a507e9f8316",
+      "e3b0d327-f207-4011-b6bc-6be30ad47b31",
+      "dc13ed21-f1ad-4ac7-9428-e29c5ef0473a",
+      "142d8e94-90b5-4cd8-88ef-d6e769e0c87b",
+      "44526a1d-cfd9-485b-9b2e-c3c5e22d81a6",
+      "d4016174-45a1-461d-8a54-e0e1e9b4dd49",
+      "e12c75ed-29e6-4a41-aa4c-3a329d70ca66",
+      "ab3673f8-fe0c-4df2-8de2-338e18ef191a",
+      "3dee4c34-d745-4cf2-aa45-656bd69b63bb",
+      "5e097fbb-de34-4c23-8636-b99901bce9cd",
+      "22ff5f89-d799-46f4-89bb-000836daf483",
+      "b9e7de50-4f5f-42ed-95d1-c20db4ccc1b3",
+      "d89a9e38-a7c9-4a31-af70-55aac6dec2c3",
+      "465085ed-8c5a-4c96-be97-81a530d7f235",
+      "49330356-afe2-47aa-9f7e-baf37aa2dd79",
+      "7f61f89a-ece3-4ec1-be48-7efcfbb20e10",
+      "a66ba045-a8eb-4d46-bb49-7495268a7253",
+      "bb285850-b40f-487f-9e6b-6d7ca21ed321",
+      "8bb73d29-fdaf-4c95-af5b-7797a19d5a01",
+      "ef834657-1e60-443b-aeff-05e238e9aaa6",
+      "5ed3ab22-6432-43ce-96e6-dcccfe0b6df6",
+      "959902f9-1b59-438a-a3ba-9da6bfccdf29",
+      "bf560f68-12ff-458f-9d23-342190f1c8c2",
+      "76624855-97f2-4985-8c4c-22f3793a1b07",
+      "cd5989d4-1c1c-4969-ad91-3e8f2cec3552",
+      "ebd7d3cc-aa9a-4ff5-821c-b496cf6ebbf7",
+      "b46b3a7a-efa1-4cbb-9074-d4c0089bb916",
+      "7482ff94-49f7-4706-a51a-0de3dbecc7db",
+      "7d89a6ae-bd40-4d51-8a5a-64ca217cc641",
+      "999afad5-8be5-412a-a357-ba16475d48b6"
+    ],
+    "8c5bc7b1-a6da-4de8-b5ad-d5f2c1f9e52c" : [
+      "50ae9d2b-b2eb-4a81-8e32-fbf53373a499"
+    ],
+    "8d31e283-48bd-4cd7-bde2-6ec5ad26524a" : [
+      "baca682f-bb62-4ee0-8a6d-d3076b4f6c3f",
+      "743c8051-787a-4c05-9231-b9b3203e3371",
+      "a5909fea-2422-42a5-84ae-39d99447cacf"
+    ],
+    "94c12cf7-7a01-4db0-ba1c-0e0e2218eadc" : [
+      "0f4dfaf2-72ce-48ef-b35e-3ce8ed08526b",
+      "3407820a-a354-4ac0-9668-163641834ae3",
+      "5de9307a-0ebd-4a82-aa13-142780e7e2a3",
+      "97eed053-f50d-466c-a8df-5bb757172b47",
+      "50e1d9a3-a386-4d9f-9fdf-42339f95b5db"
+    ],
+    "a22e8021-d4e7-4c80-8ea2-6dd6b0e3d07f" : [
+      "3d2964d8-6a3d-45ac-ae62-f1af2727e640",
+      "a4dd2178-ad55-4674-884d-066292f4313b"
+    ],
+    "a4dd2178-ad55-4674-884d-066292f4313b" : [
+      "f787cff1-88c8-4086-b9fc-c0ea30ac8515"
+    ],
+    "a5909fea-2422-42a5-84ae-39d99447cacf" : [
+      "b9c88032-bf75-429c-af8a-7abaf82799fe",
+      "8bf7a0be-5ad6-4d64-b9bf-cdcee7cbcbd3"
+    ],
+    "b9b177ff-1803-4102-b5f6-88adb9887414" : [
+      "caa738c5-72a8-457d-8c04-e4addedbdc5a",
+      "37086d2b-dd1f-40ca-95ed-ad8a211f12a4",
+      "3503fb5c-635b-48d3-bb21-7e6e101b990e"
+    ],
+    "baca682f-bb62-4ee0-8a6d-d3076b4f6c3f" : [
+      "7ba7d818-1371-489a-8641-d77f87cf8a2a",
+      "372b2036-70b2-40a7-9e9e-1cbef4ba086a",
+      "c2b11f7d-8c5c-4e06-a3e3-8768ae7102fc",
+      "4c2f93a7-600a-4221-b3f3-f12b3f88b93b",
+      "ccadafeb-498b-4c3d-abdd-0a715b0498a9",
+      "94897d57-77eb-4846-aa58-c74eea3b0e53",
+      "e20431fe-ca78-4abf-95b4-56d549d7322c"
+    ],
+    "ccadafeb-498b-4c3d-abdd-0a715b0498a9" : [
+      "742c94fe-04d0-4efb-923e-2a318c557457",
+      "d9cf779b-8c8a-4ccc-9447-62f293169a60"
+    ],
+    "d2309e5e-9a11-4f8a-8497-9d54e0406de8" : [
+      "73abc968-00c6-41a3-bdd4-ed96f46614ae"
+    ],
+    "d9cf779b-8c8a-4ccc-9447-62f293169a60" : [
+      "4970a61e-7acc-4daa-9766-fa75f6df6d95",
+      "80781b3d-6c04-430a-90d2-eb5c53731b40"
+    ],
+    "f55d62e2-e0ab-406e-8dca-c602defcd677" : [
+      "522274f0-0739-4d06-9992-455499e7bc76"
+    ],
+    "f69e3e25-7082-42e6-9264-717a4faa131e" : [
+      "369d5ca5-8c43-44e7-a5ed-cd7fdca314f6"
+    ],
+    "root" : [
+      "8d31e283-48bd-4cd7-bde2-6ec5ad26524a",
+      "61b3b44d-d6e5-45ea-8cad-16af56fc81ad",
+      "94c12cf7-7a01-4db0-ba1c-0e0e2218eadc",
+      "c9d2f3eb-836f-4dcf-be33-5515aace469d"
+    ]
+  },
+  "projectID" : "5fa66a4a-b8cb-437c-a536-4fea71b4a933",
+  "settings" : {
+
+  },
+  "title" : "greek-reader"
+}

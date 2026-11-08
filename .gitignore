@@ -1,0 +1,13 @@
+# pipeline inputs and outputs
+pipeline/sources/
+pipeline/build/
+pipeline/out/
+__pycache__/
+app/GreekReader/Resources/Databases/
+
+# Xcode
+xcuserdata/
+*.xcuserstate
+DerivedData/
+.build/
+.DS_Store
