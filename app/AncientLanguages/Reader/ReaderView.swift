@@ -312,6 +312,7 @@ struct ReaderView: View {
         if work.isCoptic { return "Saying & page numbers" }
         if work.form == "history" { return "Chapter numbers" }
         if work.form == "sections" || work.form == "speeches" { return "Section numbers" }
+        if work.form == "chapters" && work.kind == .prose && !work.isSanskrit { return "Section numbers" }   // Agricola, the Epitome
         if work.isBible || work.form == "chapters" { return "Verse numbers" }
         return work.kind == .verse ? "Line numbers" : "Stephanus numbers"
     }

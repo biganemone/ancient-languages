@@ -235,7 +235,7 @@ def verse_blocks(work, data):
                         segments=[dict(cite=cite(l), line_n=line_number(l["n"]), speaker=l["speaker"],
                                        heading=l["heading"], part=l["part"], para=l["para"],
                                        text=l["text"], markers=[]) for l in b["lines"]]))
-    report.setdefault(work["title"], {}).update(
+    report.setdefault(report_key(work), {}).update(
         lines=len(lines), blocks=len(out),
         block_sizes=dict(Counter(min(len(b["segments"]), 40) for b in out).most_common(5)))
     return out
@@ -447,7 +447,7 @@ def prose_blocks(work, data):
                              para=para, text=p["text"], markers=marker))
         out.append(dict(cite_start=segs[0]["cite"], cite_end=segs[-1]["cite"], english=english.get(k, ""),
                         english_markers=[], segments=segs))
-    report.setdefault(work["title"], {}).update(
+    report.setdefault(report_key(work), {}).update(
         sections=len(out), sections_without_english=missing,
         english_sections_unmatched=len(set(english) - set(blocks)))
     return out
@@ -658,15 +658,21 @@ def build_work(db, sort, work, data, tbdir):
                        (form, rank, lemma, greek.lex_key(lemma), parse))
 
     total = len(tokens)
-    report.setdefault(work["title"], {}).update(
+    report.setdefault(report_key(work), {}).update(
         tokens=total, parses={k: f"{100 * v / max(total, 1):.1f}%" for k, v in stats.items()})
+
+
+def report_key(work):
+    """The work's title, with its author when another work has the same title (Electra, Ion)."""
+    same = sum(1 for w in WORKS if w["title"] == work["title"])
+    return work["title"] if same < 2 or not work.get("author") else f"{work['author']}, {work['title']}"
 
 
 def main(data, tbdir, out, only=None):
     db = sqlite3.connect(out)
     db.executescript(SCHEMA)
     for sort, work in enumerate(WORKS):
-        if only and work["title"] not in only:
+        if only and work["title"] not in only and report_key(work) not in only and work["author"] not in only:
             continue
         build_work(db, sort, work, data, tbdir)
         print(f"built {work['title']}", file=sys.stderr)

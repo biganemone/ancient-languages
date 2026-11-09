@@ -24,6 +24,10 @@ SOPHOCLES = dict(author="Sophocles", kind="verse", form="drama", blocks="card", 
 PLATO = dict(author="Plato", kind="prose", form="dialogue", blocks="section", dialect="attic")
 AESCHYLUS = dict(author="Aeschylus", kind="verse", form="drama", blocks="card", dialect="attic",
                  translator="H. W. Smyth")
+EURIPIDES = dict(author="Euripides", kind="verse", form="drama", blocks="card", dialect="attic",
+                 greek="perseus-grc2", english="perseus-eng2", translator="E. P. Coleridge")
+ARISTOPHANES = dict(author="Aristophanes", kind="verse", form="drama", blocks="card", dialect="attic",
+                    greek="perseus-grc2", english="perseus-eng2")
 # Hesiod: no book divisions, so the treebank is aligned to the whole poem ("poem").
 HESIOD = dict(author="Hesiod", kind="verse", form="poem", blocks="card", dialect="epic",
               greek="perseus-grc2", english="perseus-eng2", translator="H. G. Evelyn-White")
@@ -157,6 +161,29 @@ WORKS = [
     dict(AESCHYLUS, work="tlg0085.tlg007", title="Eumenides", greek="perseus-grc2", english="perseus-eng2",
          treebank="tlg0085.tlg007.perseus-grc1.tb.xml"),
 
+    # Euripides: Murray's text, Coleridge's prose translation (1891) by cards
+    dict(EURIPIDES, work="tlg0006.tlg001", title="Cyclops"),
+    dict(EURIPIDES, work="tlg0006.tlg002", title="Alcestis"),
+    dict(EURIPIDES, work="tlg0006.tlg003", title="Medea"),
+    dict(EURIPIDES, work="tlg0006.tlg004", title="Heracleidae"),
+    dict(EURIPIDES, work="tlg0006.tlg005", title="Hippolytus"),
+    dict(EURIPIDES, work="tlg0006.tlg006", title="Andromache"),
+    dict(EURIPIDES, work="tlg0006.tlg007", title="Hecuba"),
+    dict(EURIPIDES, work="tlg0006.tlg008", title="Suppliants"),
+    dict(EURIPIDES, work="tlg0006.tlg009", title="Heracles"),
+    dict(EURIPIDES, work="tlg0006.tlg010", title="Ion"),
+    dict(EURIPIDES, work="tlg0006.tlg011", title="Trojan Women"),
+    dict(EURIPIDES, work="tlg0006.tlg012", title="Electra"),
+    dict(EURIPIDES, work="tlg0006.tlg013", title="Iphigenia in Tauris"),
+    dict(EURIPIDES, work="tlg0006.tlg014", title="Helen"),
+    dict(EURIPIDES, work="tlg0006.tlg015", title="Phoenician Women"),
+    dict(EURIPIDES, work="tlg0006.tlg016", title="Orestes"),
+    dict(EURIPIDES, work="tlg0006.tlg017", title="Bacchae", translator="T. A. Buckley"),
+    dict(EURIPIDES, work="tlg0006.tlg018", title="Iphigenia in Aulis"),
+    dict(EURIPIDES, work="tlg0006.tlg019", title="Rhesus", english="perseus-eng3"),
+    dict(ARISTOPHANES, work="tlg0019.tlg003", title="Clouds", translator="W. J. Hickie"),
+    dict(ARISTOPHANES, work="tlg0019.tlg006", title="Birds", translator="Anonymous (1912)"),
+
     dict(author="Herodotus", work="tlg0016.tlg001", title="Histories", kind="prose", form="history",
          blocks="chapter", dialect="ionic", greek="perseus-grc2", english="perseus-eng2",
          translator="A. D. Godley", treebank="tlg0016.tlg001.perseus-grc1.1.tb.xml", treebank_book="1", section_blocks=True),
@@ -166,6 +193,13 @@ WORKS = [
          gorman=[f"thuc 1 {r}.xml" for r in ("1-20 bu5", "21-40 bu4", "41-60 bu3", "61-80 bu3", "81-100 bu2",
                                               "101-120 bu2", "121-146 bu3")]
                 + ["thuc 3.1-20 bu1.xml", "thuc 3.21-40 bu1.xml"]),
+    dict(author="Apollodorus", work="tlg0548.tlg001", title="Library", kind="prose", form="history",
+         blocks="chapter", dialect="attic", greek="perseus-grc2", english="perseus-eng2",
+         translator="J. G. Frazer", section_blocks=True,
+         treebank="tlg0548.tlg001.perseus-grc1.1.1.1-1.4.1.tb.xml", treebank_book="1"),
+    dict(author="Apollodorus", work="tlg0548.tlg002", title="Epitome", kind="prose", form="chapters",
+         blocks="chapter", dialect="attic", greek="perseus-grc2", english="perseus-eng2",
+         translator="J. G. Frazer", section_blocks=True),
     dict(author="Marcus Aurelius", work="tlg0562.tlg001", title="Meditations", kind="prose", form="history",
          blocks="chapter", dialect="attic", greek="perseus-grc2", english="long-eng",
          english_file="data/marcus_aurelius_long.xml", translator="George Long"),

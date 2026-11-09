@@ -12,14 +12,14 @@ The app ships with the **default texts** below and every dictionary. The other t
 
 | Language | Default texts (ship with the app) | Also available to download | Dictionaries |
 |---|---|---|---|
-| **Greek** | Homer, *Iliad* and *Odyssey*; Plato, *Euthyphro*, *Apology*, *Crito*; Sophocles, *Antigone*; Herodotus; Marcus Aurelius; the New Testament (SBLGNT) | the rest of Plato and Sophocles; Aeschylus; Hesiod and the Homeric Hymns; Thucydides; Josephus, *Jewish War*; the Septuagint | LSJ; Middle Liddell; Autenrieth (Homer); Abbott-Smith (New Testament); Logeion short definitions |
-| **Latin** | Vergil, *Aeneid*; Caesar, *Gallic War*; Ovid, *Metamorphoses*; Cicero, *In Catilinam* and *De Amicitia*; Tacitus, *Agricola*, *Germania*, *Annals* 1; the Vulgate | — | Lewis & Short; Lewis's Elementary Latin Dictionary |
+| **Greek** | Homer, *Iliad* and *Odyssey*; Plato, *Euthyphro*, *Apology*, *Crito*; Sophocles, *Antigone*; Herodotus; Marcus Aurelius; the New Testament (SBLGNT) | the rest of Plato and Sophocles; Aeschylus; Euripides (all 19 plays); Aristophanes, *Clouds* and *Birds*; Hesiod and the Homeric Hymns; Apollodorus, *Library* and *Epitome*; Thucydides; Josephus, *Jewish War*; the Septuagint; the Gospel of Nicodemus (Acts of Pilate) | LSJ; Middle Liddell; Autenrieth (Homer); Abbott-Smith (New Testament); Logeion short definitions |
+| **Latin** | Vergil, *Aeneid*; Caesar, *Gallic War*; Ovid, *Metamorphoses*; Cicero, *In Catilinam* and *De Amicitia*; Tacitus, *Agricola*, *Germania*, *Annals* 1; the Vulgate | Homer's *Iliad*, *Odyssey* and *Hymns* in the Didot edition's word-for-word Latin (1837–38), line for line with the Greek: read on its own, or shown beside the Greek (Parallel text: Latin) | Lewis & Short; Lewis's Elementary Latin Dictionary |
 | **Hebrew** | the Hebrew Bible (Westminster Leningrad Codex): Torah, Prophets, Writings | — | Brown–Driver–Briggs; Strong's; STEPBible glosses |
 | **Sanskrit** | *Bhagavad Gītā*; the Kaṭha, Muṇḍaka, Taittirīya, Aitareya, Chāndogya, Bṛhadāraṇyaka and Śvetāśvatara Upaniṣads (IAST or Devanāgarī) | — | Macdonell; Monier-Williams |
-| **Coptic** | *Gospel of Thomas* (Coptic SCRIPTORIUM) | the Sahidic New Testament; the rest of the Nag Hammadi Library; the Berlin Codex (BG 8502) | Comprehensive Coptic Lexicon; Crum |
+| **Coptic** | *Gospel of Thomas* (Coptic SCRIPTORIUM) | the Sahidic New Testament; the rest of the Nag Hammadi Library; the Berlin Codex (BG 8502); fragments of the Acts of Pilate | Comprehensive Coptic Lexicon; Crum |
 | **Old English** | *Beowulf* | the rest of the Anglo-Saxon Poetic Records (Junius, Vercelli and Exeter Books, Paris Psalter, Meters of Boethius, minor poems) | Klaeber's *Beowulf* glossary; Bosworth–Toller |
 
-In all, 445 texts: 165 ship with the app and 280 are downloads (about 76 MB together). The default list is `pipeline/defaults.py`. Hebrew and Sanskrit each have their own text-size setting.
+In all, 473 texts: 165 ship with the app and 308 are downloads. The default list is `pipeline/defaults.py`. Hebrew and Sanskrit each have their own text-size setting.
 
 Parses come from hand-made treebanks where they exist: Perseus, Gorman, PROIEL, MACULA, OSHB, DCS and Coptic SCRIPTORIUM. Elsewhere they are generated automatically, which is less reliable: by Morpheus for Greek and Latin, by the Coptic SCRIPTORIUM tools for Coptic, and from Klaeber's glossary and generated forms for Old English.
 
@@ -105,6 +105,8 @@ app/specs/  design notes
     - the Berean Standard Bible;
     - the Updated Brenton Septuagint;
     - Abbott-Smith;
+    - the Didot Latin Homer (Project Gutenberg #52691–52693);
+    - Tischendorf's *Evangelia Apocrypha* (1876), whose Greek Gospel of Nicodemus was transcribed for this project (`pipeline/data/acts_of_pilate_tischendorf.txt`);
     - Bosworth–Toller;
     - Horner's Sahidic New Testament;
     - translations by Long, Besant, Müller and others (Project Gutenberg, Wikisource, sacred-texts.com).

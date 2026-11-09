@@ -53,7 +53,6 @@ def remove_works(lib, urns):
             for t in ("segment", "block", "part"):
                 db.execute(f"DELETE FROM {t} WHERE work_id = ?", (wid,))
             db.execute("DELETE FROM work WHERE id = ?", (wid,))
-        db.execute("DELETE FROM parallel WHERE urn = ?", (urn,))
     db.execute("COMMIT")
     db.execute("PRAGMA incremental_vacuum").fetchall()
 

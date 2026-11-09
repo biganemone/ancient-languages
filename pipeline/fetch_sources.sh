@@ -53,7 +53,7 @@ clone helmadik/shortdefs shortdefs .
 # Coptic: texts from Coptic SCRIPTORIUM, the Comprehensive Coptic Lexicon from KELLIA.
 # (Marcion files - Nag Hammadi texts, Crum - are downloaded by hand into sources/marcion/;
 #  SourceForge refuses automated downloads.)
-coptic_texts=$(cd "$here" && python3 -c "from build_coptic import WORKS; print(' '.join(w['path'] for w in WORKS))")
+coptic_texts=$(cd "$here" && python3 -c "from build_coptic import WORKS, paths; print(' '.join(p for w in WORKS for p in paths(w)))")
 clone CopticScriptorium/corpora coptic-scriptorium $coptic_texts
 clone KELLIA/dictionary kellia-dictionary xml/Comprehensive_Coptic_Lexicon-v1.2-2020.xml
 

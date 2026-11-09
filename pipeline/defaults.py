@@ -14,3 +14,6 @@ URNS = [
 ]
 AUTHORS = ["New Testament", "Herodotus", "Marcus Aurelius"]
 LANGUAGES = ["lat", "hbo", "san"]          # all the Latin, the Hebrew Bible, the Gītā and Upanishads
+# ...except these, which are downloads: the Latin Homer is a crib for the Greek (latin_homer.py)
+EXCLUDE = ["urn:cts:latinLit:homer.ilias_didot", "urn:cts:latinLit:homer.odyssea_didot",
+           "urn:cts:latinLit:homer.hymni_didot"]

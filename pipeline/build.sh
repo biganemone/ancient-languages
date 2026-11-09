@@ -23,6 +23,10 @@ python3 build_lxx.py sources/lxx-swete sources/brenton sources/treebank_data/v2.
 # the Greek New Testament (SBLGNT + MACULA Greek + Berean Standard Bible)
 python3 build_nt.py sources/sblgnt sources/macula-greek sources/bible_databases/formats/csv/BSB.csv build/texts.db \
   > build/nt_report.json
+# the Gospel of Nicodemus (Acts of Pilate + Descent into Hell): Tischendorf's Greek, transcribed into
+# pipeline/data; Walker's English
+python3 build_apocrypha.py build/texts.db sources/treebank_data/v2.1/Greek/texts \
+  sources/macula-greek/SBLGNT/tsv/macula-greek-SBLGNT.tsv > build/apocrypha_report.json
 # Latin: the Aeneid and the Vulgate (with its verse map to the LXX and the NT, so after them)
 python3 build_latin.py sources build/texts.db > build/latin_report.json
 # the Hebrew Bible (OSHB), with verse links to the LXX and the Vulgate (so after both)

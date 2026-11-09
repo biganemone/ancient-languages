@@ -167,6 +167,10 @@ def main():
         a.within = True
     s = sqlite3.connect(a.db)
     works = select_works(s, a.urn, a.author, a.language)
+    if a.defaults:
+        excluded = {wid for (wid,) in s.execute(
+            f"SELECT id FROM work WHERE urn IN ({','.join('?' * len(defaults.EXCLUDE))})", defaults.EXCLUDE)}
+        works = [w for w in works if w not in excluded]
     counts = export(s, works, a.out, a.within)
     print(f"{a.out}: {os.path.getsize(a.out) / 1e6:.1f} MB", counts)
     if a.deflate:

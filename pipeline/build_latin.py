@@ -33,6 +33,7 @@ import sys
 from collections import Counter, defaultdict
 
 import latin
+import latin_homer
 import morpheus
 import tei
 from build_texts import prose_blocks, verse_blocks
@@ -173,6 +174,24 @@ def build_perseus_latin(db, sort, sources, frequency, w):
 
 
 # ---------------------------------------------------------------- Writing --
+OLD_SPELLINGS = [("y", "i"), ("œ", "e"), ("Œ", "E"), ("mt", "mpt"), ("ll", "l"), ("cle", "cli"), ("quenq", "quemq"),
+                 ("cæ", "ce"), ("æ", "e")]
+
+
+def old_spelling_variants(form):
+    """Modern spellings to try for a form Morpheus doesn't know (each change, then all)."""
+    out = []
+    for old, new in OLD_SPELLINGS:
+        if old in form:
+            out.append(form.replace(old, new))
+    allc = form
+    for old, new in OLD_SPELLINGS:
+        allc = allc.replace(old, new)
+    if allc != form:
+        out.append(allc)
+    return list(dict.fromkeys(out))
+
+
 def insert_work(db, sort, meta, blocks, frequency, treebank=None):
     """blocks: [dict(cite_start, cite_end, english, segments=[dict(cite, line_n,
     heading, para, text, markers)])]. treebank: [(book or None, words)].
@@ -205,6 +224,16 @@ def insert_work(db, sort, meta, blocks, frequency, treebank=None):
         stats["treebank"] += attach(toks, words)
     need = sorted({t["form"] for t in tokens if "lemma" not in t})
     analyses = morpheus.latin_analyses(need, frequency) if need else {}
+    # older spellings (the Didot Homer's inclytus, ocyus, cœna, promtus): try the modern one
+    variants = {f: old_spelling_variants(f) for f in need if not analyses.get(f)}
+    variants = {f: v for f, v in variants.items() if v}
+    if variants:
+        extra = morpheus.latin_analyses(sorted({x for vs in variants.values() for x in vs}), frequency)
+        for f, vs in variants.items():
+            for x in vs:
+                if extra.get(x):
+                    analyses[f] = extra[x]
+                    break
     for t in tokens:
         if "lemma" not in t:
             found = analyses.get(t["form"]) or []
@@ -480,6 +509,19 @@ def main(sources, out):
     sort = db.execute("SELECT COALESCE(MAX(sort), 0) FROM work").fetchone()[0] + 1
     for i, w in enumerate(PERSEUS_LATIN):
         _wid, _b, report[w["title"]] = build_perseus_latin(db, sort + i, sources, frequency, w)
+    # the Didot Latin Homer, block for block with the Greek (latin_homer.py), and its map to the Greek
+    sort = db.execute("SELECT COALESCE(MAX(sort), 0) FROM work").fetchone()[0] + 1
+    pairs = []
+    for i, w in enumerate(latin_homer.WORKS):
+        shaped = latin_homer.blocks_for(db, w)
+        if not shaped:
+            continue
+        meta = dict(urn=w["urn"], author="Homer", title=w["title"], kind="verse", form="epic",
+                    translator="A. T. Murray", parse_source="morpheus", credit=latin_homer.CREDIT)
+        _wid, block_ids, report[w["title"]] = insert_work(db, sort + i, meta, [b for _, b in shaped], frequency)
+        pairs += [(lb, gb) for lb, (gb, _) in zip(block_ids, shaped)]
+    db.execute("CREATE TABLE IF NOT EXISTS parallel (block_id INT, other_block_id INT)")
+    db.executemany("INSERT INTO parallel VALUES (?,?)", pairs + [(b, a) for a, b in pairs])
     db.execute("DELETE FROM analysis WHERE rowid NOT IN (SELECT MIN(rowid) FROM analysis GROUP BY form, rank)")
     db.commit()
     print(json.dumps(report, ensure_ascii=False, indent=1))

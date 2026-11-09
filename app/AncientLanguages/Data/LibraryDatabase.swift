@@ -179,8 +179,10 @@ enum LibraryDatabase {
                     }
                     try db.execute("DELETE FROM work WHERE id = ?", [id])
                 }
-                // links from this text to others; links from other texts to it stay, for when it comes back
-                try db.execute("DELETE FROM parallel WHERE urn = ?", [urn])
+                // Parallel links (by URN and citation) stay, both ways: a link whose other text
+                // isn't installed finds no block, and they work again when the text comes back.
+                // (The bundled texts carry only links among themselves: the Greek Iliad's links
+                // to the Latin Homer come with the Latin, so they must outlive the Iliad's removal.)
             }
             try db.executeScript("COMMIT")
         } catch {

@@ -22,7 +22,17 @@ WORKS = [
          form="sayings", unit="saying",
          credit="Coptic text ed. Paul C. Dilley; annotation by Coptic SCRIPTORIUM "
                 "(Dilley, Bremer-McCollum, Schroeder, Zeldes). CC BY 4.0."),
+    # two fragments of the Acts of Pilate (Gospel of Nicodemus 9-11) from a White Monastery codex
+    dict(path=["acts-pilate/acts.pilate_TT/pilate.1643.27-28.tt", "acts-pilate/acts.pilate_TT/pilate.1643.31-32.tt"],
+         urn="urn:cts:copticLit:misc.acts_pilate", author="New Testament Apocrypha",
+         title="Acts of Pilate (fragments)", form="chapters", unit="chapter",
+         credit="Coptic text after P. Lacau (1904); annotation by Coptic SCRIPTORIUM "
+                "(Lydia Bremer-McCollum, Nicholas Wagner). CC BY 4.0."),
 ]
+
+
+def paths(work):
+    return work["path"] if isinstance(work["path"], list) else [work["path"]]
 
 ATTR = re.compile(r'([\w:]+)="([^"]*)"')
 
@@ -69,7 +79,15 @@ def main_morph(morphs):
 
 
 def build(db, corpora, work, sort):
-    units = read_tt(f"{corpora}/{work['path']}")
+    units = []
+    for p in paths(work):           # fragments: a chapter split between files is one unit
+        for u in read_tt(f"{corpora}/{p}"):
+            if units and units[-1]["n"] == u["n"]:
+                gap = len(units[-1]["groups"])
+                units[-1]["page_breaks"] += [(gap + gi, pg) for gi, pg in u["page_breaks"]]
+                units[-1]["groups"] += u["groups"]
+            else:
+                units.append(u)
     wid = db.execute(
         "INSERT INTO work(sort,urn,author,title,kind,form,greek_urn,english_urn,translator,scope,parse_source,language,credit)"
         " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
