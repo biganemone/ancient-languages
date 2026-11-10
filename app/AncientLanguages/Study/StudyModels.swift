@@ -27,8 +27,14 @@ struct DeckSource: Codable, Hashable, Identifiable {
     var workURN: String?
     var fromPart: String?        // part keys ("1", "6"); nil = from the start / to the end
     var toPart: String?
+    /// For `author`: only that author's works in this language (code, "grc").
+    /// Older decks have none and take every language.
+    var language: String? = nil
 
-    var id: String { "\(author ?? "")|\(workURN ?? "")|\(fromPart ?? "")|\(toPart ?? "")" }
+    var id: String {
+        let base = "\(author ?? "")|\(workURN ?? "")|\(fromPart ?? "")|\(toPart ?? "")"
+        return language.map { "\(base)|\($0)" } ?? base    // unchanged for older decks
+    }
 }
 
 /// A set of flashcards drawn from some texts. What you remember about a word

@@ -53,7 +53,9 @@ final class Vocabulary {
     func ranges(for deck: Deck) -> [(work: Work, first: Int, last: Int)] {
         var out: [(work: Work, first: Int, last: Int)] = []
         for source in deck.sources {
-            let chosen = source.author.map { a in works.filter { $0.author == a } }
+            let chosen = source.author.map { a in
+                works.filter { $0.author == a && (source.language == nil || $0.language == source.language) }
+            }
                 ?? works.filter { $0.urn == source.workURN }
             for work in chosen {
                 let parts = self.parts(of: work)
