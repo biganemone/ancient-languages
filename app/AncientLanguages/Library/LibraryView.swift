@@ -59,11 +59,6 @@ struct LibraryView: View {
                              : "This version of the app has new editions of the texts, so texts you downloaded need downloading again.")
                     }
                 }
-                if !searching {
-                    languageTabs
-                        .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
-                }
                 if searching && groups.isEmpty {
                     ContentUnavailableView.search(text: query)
                         .listRowBackground(Color.clear)
@@ -93,6 +88,15 @@ struct LibraryView: View {
                     }
                 }
             }
+            // Above the list, not a row of it: inside one list row, a long press
+            // anywhere in the row opened the first tab's menu ("Remove Greek…").
+            .safeAreaInset(edge: .top, spacing: 0) {
+                if !searching {
+                    languageTabs
+                        .padding(.vertical, 6)
+                        .background(Color(.systemGroupedBackground))
+                }
+            }
             .searchable(text: $query, prompt: "Search titles and authors")
             .navigationTitle("Read")
             .toolbar {
@@ -100,9 +104,13 @@ struct LibraryView: View {
                     Button {
                         adding = AddScope(language: nil, author: nil)
                     } label: {
-                        Label("Add Texts", systemImage: "plus")
-                            .labelStyle(.titleAndIcon)
+                        // words, not just "+" (a toolbar would otherwise show only the icon)
+                        HStack(spacing: 4) {
+                            Image(systemName: "plus")
+                            Text("Add Texts")
+                        }
                     }
+                    .accessibilityLabel("Add Texts")
                 }
             }
             .sheet(item: $adding) { scope in
@@ -155,6 +163,7 @@ struct LibraryView: View {
                                 .foregroundStyle(selected ? Color.white : Color.primary)
                         }
                         .buttonStyle(.plain)
+                        .contentShape(.contextMenuPreview, Capsule())
                         .id(lang.id)
                         .accessibilityAddTraits(selected ? .isSelected : [])
                         .contextMenu {
@@ -170,12 +179,12 @@ struct LibraryView: View {
                         Button {
                             adding = AddScope(language: nil, author: nil)
                         } label: {
-                            Image(systemName: "plus")
+                            Label("More Languages", systemImage: "plus")
+                                .font(.subheadline)
                                 .padding(.horizontal, 12).padding(.vertical, 7)
                                 .background(Capsule().strokeBorder(Color.secondary.opacity(0.4)))
                         }
                         .buttonStyle(.plain)
-                        .accessibilityLabel("Add languages")
                     }
                 }
                 .padding(.horizontal, 16)
