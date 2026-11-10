@@ -31,7 +31,7 @@ struct AncientLanguagesApp: App {
     }
 }
 
-/// Two tabs, Read and Study; the app opens on whichever was used last.
+/// Three tabs, Read, Study and Reference; the app opens on whichever was used last.
 struct RootView: View {
     let library: Library
     let catalog: Catalog
@@ -46,6 +46,9 @@ struct RootView: View {
             StudyTab(library: library)
                 .tabItem { Label("Study", systemImage: "rectangle.stack") }
                 .tag(RootTab.study)
+            ReferenceTab(library: library)
+                .tabItem { Label("Reference", systemImage: "books.vertical") }
+                .tag(RootTab.reference)
         }
     }
 }
@@ -83,6 +86,8 @@ final class Library {
     /// that code ("non:…") are looked up there. A missing file isn't a
     /// `problem`: the lookup sheet offers to download it.
     private(set) var extraLexicons: [String: LexiconStore] = [:]
+    /// The reference grammars (grammar.db), if the app was built with them.
+    private(set) var grammar: GrammarStore?
     private(set) var works: [Work] = []
     private(set) var problem: String?
     /// False while library.db is being made (first launch, or after an update).
@@ -117,6 +122,9 @@ final class Library {
         do {
             let texts = try TextStore(url: LibraryDatabase.url, mode: .readOnly)
             if lexicon == nil { lexicon = try LexiconStore(url: lexiconURL) }
+            if grammar == nil, let url = Bundle.main.url(forResource: "grammar", withExtension: "db") {
+                grammar = try? GrammarStore(url: url)
+            }
             if extraLexicons.isEmpty { reloadDictionaries() }
             works = try texts.works()
             self.texts = texts

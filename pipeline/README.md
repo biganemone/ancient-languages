@@ -95,6 +95,31 @@ Homeric spelling (`homeric_candidates`). About 98% of words in Homer find an ent
 In the app Autenrieth is the default lexicon for Homer (and later Hesiod and the Hymns);
 where it has no entry, the card shows LSJ.
 
+## Grammars
+
+The Reference tab and the "§" button on the lookup card use two public-domain grammars, in
+`sources/grammars/`:
+
+- Smyth, *A Greek Grammar for Colleges* (1920), Perseus:text:1999.04.0007. Download by hand
+  (like Autenrieth): `https://www.perseus.tufts.edu/hopper/dltext?doc=Perseus:text:1999.04.0007`,
+  saved as `smyth.xml`. The server often drops the connection part-way; retry until the file
+  ends with `</TEI.2>`. (Not the 1956 revision by Messing, which is still in copyright.)
+  Its sections are `<milestone unit="smythp" n="428"/>` marks between paragraphs; sub-notes
+  ("429 a", "430 D" for dialect notes) are folded into their section.
+- Monro, *A Grammar of the Homeric Dialect* (2nd ed., 1891), optional. Perseus doesn't have it.
+  `fetch_monro.py` (run by `build.sh` when `monro.xml` is missing) crawls the CC BY-SA 4.0
+  edition at Dickinson College Commentaries (`https://dcc.dickinson.edu/grammar/monro/`, about
+  200 pages, one request a second, cached in `sources/grammars/monro_html/`) and writes
+  `monro.xml` as simple TEI with one `<div type="section" n="…">` per numbered paragraph.
+
+`build_grammar.py` makes `grammar.db`: each numbered section as HTML, and the `ref` table that
+turns a parse into sections (tense, mood, voice, case, part of speech; the augment for past
+indicatives, reduplication for perfects, the second aorist for irregular aorists). Each rule
+names the section we expect and words its opening should contain; the build takes the nearest
+section that matches. Check `build/grammar_report.json`: `moved` lists rules that landed on a
+different number than expected, `missing` those that found nothing. Without the sources the app
+builds without grammars and hides the "§" button.
+
 ## Coptic sources
 
 `fetch_sources.sh` gets Coptic SCRIPTORIUM and the KELLIA lexicon. Marcion's files come from

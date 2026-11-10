@@ -5,11 +5,15 @@ import WebKit
 /// with very long entries (λόγος, εἰμί) far better than attributed strings.
 struct EntryWebView: UIViewRepresentable {
     let html: String
+    /// Tapped links (grammar cross-references: grammar://smyth/439). Without
+    /// it, links do nothing.
+    var onLink: ((URL) -> Void)? = nil
 
     func makeCoordinator() -> Coordinator { Coordinator() }
 
     func makeUIView(context: Context) -> WKWebView {
         let view = WKWebView(frame: .zero, configuration: WKWebViewConfiguration())
+        view.navigationDelegate = context.coordinator
         view.isOpaque = false
         view.backgroundColor = .clear
         view.scrollView.backgroundColor = .clear
@@ -17,14 +21,26 @@ struct EntryWebView: UIViewRepresentable {
     }
 
     func updateUIView(_ view: WKWebView, context: Context) {
+        context.coordinator.onLink = onLink
         guard context.coordinator.lastHTML != html else { return }
         context.coordinator.lastHTML = html
         // Base URL = bundle resources, so the CSS can load the bundled Gentium fonts.
         view.loadHTMLString(Self.page(html), baseURL: Bundle.main.resourceURL)
     }
 
-    final class Coordinator {
+    final class Coordinator: NSObject, WKNavigationDelegate {
         var lastHTML: String?
+        var onLink: ((URL) -> Void)?
+
+        func webView(_ webView: WKWebView, decidePolicyFor action: WKNavigationAction,
+                     decisionHandler: @escaping @MainActor (WKNavigationActionPolicy) -> Void) {
+            guard action.navigationType == .linkActivated, let url = action.request.url else {
+                decisionHandler(.allow)        // our own loadHTMLString
+                return
+            }
+            decisionHandler(.cancel)
+            onLink?(url)
+        }
     }
 
     private static func page(_ body: String) -> String {
@@ -50,9 +66,18 @@ struct EntryWebView: UIViewRepresentable {
         .etym { color: #5b5346; }
         .note, .none { font: 13px -apple-system, sans-serif; color: #8a7d65; }
         hr { border: 0; border-top: 1px solid #d8cdb6; margin: 1em 0; }
+        .grammar h4 { font-size: 1em; margin: .7em 0 .3em; }
+        .grammar p { margin: .45em 0; }
+        .grammar table { border-collapse: collapse; font-size: .92em; margin: .5em 0; }
+        .grammar td { padding: 2px 10px 2px 0; vertical-align: top; }
+        .grammar ul { padding-left: 1.2em; }
+        .sc { font-variant: small-caps; }
+        .fn { font-size: .85em; color: #8a7d65; }
+        a { color: #6b5a3a; }
         @media (prefers-color-scheme: dark) {
           body { color: #e6e0d6; } .sn { color: #cdb07a; } .bibl, .note, .none { color: #a39274; }
           .etym { color: #c9c0b0; } hr { border-top-color: #4a4336; }
+          a { color: #cdb07a; } .fn { color: #a39274; }
         }
         </style></head><body>\(body)</body></html>
         """

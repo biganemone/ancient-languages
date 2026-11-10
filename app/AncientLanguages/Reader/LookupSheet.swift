@@ -29,6 +29,7 @@ struct LookupSheet: View {
     @State private var current = Lexicon.lsj
     @State private var analyses: [Analysis] = []
     @State private var chosen = 0
+    @State private var grammarRefs: GrammarRefsRequest?
     @Environment(\.openURL) private var openURL
     @Environment(\.dismiss) private var dismiss
     @Environment(AnnotationStore.self) private var store
@@ -42,7 +43,11 @@ struct LookupSheet: View {
                 if analyses.isEmpty {
                     let parse = ParseFormatter.describe(selection.token.postag)
                     if !parse.isEmpty {
-                        Text(parse).font(.subheadline).foregroundStyle(Color(Palette.speaker))
+                        HStack(alignment: .firstTextBaseline) {
+                            Text(parse).font(.subheadline).foregroundStyle(Color(Palette.speaker))
+                            Spacer(minLength: 4)
+                            grammarButton
+                        }
                     }
                 } else {
                     analysisList
@@ -99,6 +104,12 @@ struct LookupSheet: View {
             else { preferredGreek = newValue }
         }
         .onChange(of: chosen) { _, _ in lookupLemma() }
+        .sheet(item: $grammarRefs) { request in
+            if let store = library.grammar {
+                GrammarRefsSheet(store: store, parse: request.parse, refs: request.refs)
+                    .presentationDetents([.medium, .large])
+            }
+        }
     }
 
     /// The reader's dictionary for this work's language, if it's installed; else the first one that is.
@@ -294,8 +305,46 @@ struct LookupSheet: View {
                 Text("+ \(analyses.count - maxShown) more possible readings")
                     .font(.caption).foregroundStyle(.secondary)
             }
-            Text(caption)
-                .font(.caption2).foregroundStyle(.tertiary)
+            HStack(alignment: .firstTextBaseline) {
+                Text(caption)
+                    .font(.caption2).foregroundStyle(.tertiary)
+                Spacer(minLength: 4)
+                grammarButton
+            }
+        }
+    }
+
+    // MARK: Grammar
+
+    /// The parse being shown: the treebank's, or the chosen Morpheus reading.
+    private var currentParse: String? {
+        if analyses.indices.contains(chosen) { return analyses[chosen].parse }
+        let p = ParseFormatter.describe(selection?.token.postag)
+        return p.isEmpty ? nil : p
+    }
+
+    /// The grammar sections on this word's form and use (Greek only, for now).
+    private var currentGrammarRefs: [GrammarRef] {
+        guard LibraryLanguage(code: work.language) == .greek, let store = library.grammar,
+              let parse = currentParse else { return [] }
+        let irregular = !analyses.indices.contains(chosen) && selection?.token.aoristKey != nil
+        return store.refs(keys: GrammarKeys.keys(parse: parse, irregularAorist: irregular), homeric: work.isHomeric)
+    }
+
+    /// "§": opens the sections on this form; hidden when there are none.
+    @ViewBuilder private var grammarButton: some View {
+        let refs = currentGrammarRefs
+        if !refs.isEmpty, let parse = currentParse {
+            Button {
+                grammarRefs = GrammarRefsRequest(parse: parse, refs: refs)
+            } label: {
+                Text("§").font(.custom("GentiumBookPlus-Bold", size: 18))
+                    .padding(.horizontal, 8).padding(.vertical, 1)
+                    .background(Capsule().strokeBorder(Color(Palette.muted).opacity(0.6)))
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(Color(Palette.speaker))
+            .accessibilityLabel("Grammar for this form")
         }
     }
 
@@ -393,4 +442,11 @@ struct LookupSheet: View {
         let tag = analyses.indices.contains(chosen) ? analyses[chosen].tag : selection?.token.postag
         lookup = library.lookup(lemmaKey: key, partOfSpeech: work.isCoptic ? tag : nil)
     }
+}
+
+/// What the lookup card's "§" opens.
+struct GrammarRefsRequest: Identifiable {
+    let parse: String
+    let refs: [GrammarRef]
+    var id: String { parse }
 }

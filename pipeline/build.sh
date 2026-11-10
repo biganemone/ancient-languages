@@ -72,6 +72,11 @@ python3 build_lexicon.py sources/LSJLogeion sources/MiddleLiddell \
   sources/canonical-angLit/data/anon/klaeber_glossary/anon.klaeber_glossary.perseus-mul1.xml build/oe_bt.json \
   sources/HebrewLexicon sources \
   > build/lexicon_report.json
+# reference grammars: Smyth (Perseus TEI, fetched by hand into sources/grammars; see README) and
+# Monro (fetched from Dickinson College Commentaries once, then cached; optional)
+[ -f sources/grammars/monro.xml ] || python3 fetch_monro.py sources/grammars \
+  || echo "Monro: fetch failed; building the grammars without it"
+python3 build_grammar.py sources/grammars build/grammar.db > build/grammar_report.json
 # the Old Norse dictionaries: a downloadable module of their own (lexicon_non.db), not in lexicon.db
 python3 build_lexicon_non.py sources build/texts.db build/lexicon_non.db > build/lexicon_non_report.json
 # the app ships a compact copy of texts.db (shared lemma/tag rows, no stored word forms)
@@ -93,6 +98,7 @@ release_url='https://github.com/biganemone/ancient-languages/releases/download/t
 python3 make_catalog.py build/texts_app.db build/texts_default.db build/modules "$out/catalog.json" \
   "${DOWNLOADS_URL-$release_url}"
 cp build/lexicon.db "$out/"
+if [ -f build/grammar.db ]; then cp build/grammar.db "$out/"; else rm -f "$out/grammar.db"; fi
 echo "Built: $(du -h "$out"/*.db "$out"/*.db.z | tr '\n' ' ')"
 echo "Next: pipeline/publish_release.sh, then build the app in Xcode"
 echo "Reports: pipeline/build/*_report.json"

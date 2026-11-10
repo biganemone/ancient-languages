@@ -72,7 +72,7 @@ enum LibraryLanguage: String, CaseIterable, Identifiable {
     }
 }
 
-/// The app's two tabs.
+/// The app's tabs.
 enum RootTab: String {
-    case read, study
+    case read, study, reference
 }
