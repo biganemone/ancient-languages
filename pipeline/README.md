@@ -106,6 +106,9 @@ The Reference tab and the "§" button on the lookup card use two public-domain g
   ends with `</TEI.2>`. (Not the 1956 revision by Messing, which is still in copyright.)
   Its sections are `<milestone unit="smythp" n="428"/>` marks between paragraphs; sub-notes
   ("429 a", "430 D" for dialect notes) are folded into their section.
+  The appendix, the List of Verbs, has no numbers: it becomes a page per letter (`verbs-β`,
+  shown as "Verbs: β"), and the `verb` table indexes each entry by its headword (no accents or
+  breathings), so the lookup card's "§" offers the verb's principal parts.
 - Monro, *A Grammar of the Homeric Dialect* (2nd ed., 1891), optional. Perseus doesn't have it.
   `fetch_monro.py` (run by `build.sh` when `monro.xml` is missing) crawls the CC BY-SA 4.0
   edition at Dickinson College Commentaries (`https://dcc.dickinson.edu/grammar/monro/`, about

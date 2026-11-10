@@ -95,7 +95,7 @@ struct GrammarContentsView: View {
     private func row(_ s: GrammarSection, showPath: Bool = false) -> some View {
         NavigationLink(value: s.location) {
             HStack(alignment: .firstTextBaseline, spacing: 10) {
-                Text("§\(s.n)").font(.callout.monospacedDigit()).foregroundStyle(.secondary)
+                Text(s.label).font(.callout.monospacedDigit()).foregroundStyle(.secondary)
                     .frame(minWidth: 52, alignment: .leading)
                 VStack(alignment: .leading, spacing: 1) {
                     Text(s.heading).font(.custom("GentiumBookPlus", size: 17)).lineLimit(2)
@@ -126,7 +126,7 @@ struct GrammarSectionView: View {
                 if !found.section.path.isEmpty {
                     Text(found.section.path).font(.caption).foregroundStyle(.secondary)
                 }
-                EntryWebView(html: "<div class=\"grammar\">\(found.html)</div>") { url in
+                EntryWebView(html: "<div class=\"grammar\">\(found.html)</div>", anchor: here.anchor) { url in
                     // grammar://smyth/439
                     guard url.scheme == "grammar", let g = url.host(), let n = url.pathComponents.last else { return }
                     let target = GrammarLocation(grammar: g, n: n)
@@ -138,12 +138,12 @@ struct GrammarSectionView: View {
         }
         .padding(.horizontal, 18)
         .background(Color(Palette.paper).ignoresSafeArea())
-        .navigationTitle("\(store.book(here.grammar)?.short ?? "") §\(here.n)")
+        .navigationTitle("\(store.book(here.grammar)?.short ?? "") \(found?.section.label ?? "§" + here.n)")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             if let back = history.last {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("§\(back.n)", systemImage: "arrow.uturn.backward") {
+                    Button(store.section(back)?.section.label ?? "§\(back.n)", systemImage: "arrow.uturn.backward") {
                         history.removeLast()
                         location = back
                     }
@@ -177,12 +177,28 @@ struct GrammarRefsSheet: View {
     let store: GrammarStore
     let parse: String
     let refs: [GrammarRef]
+    var verbs: [GrammarVerb] = []
 
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
             List {
+                if !verbs.isEmpty {
+                    Section("Principal parts") {
+                        ForEach(verbs) { verb in
+                            NavigationLink(value: verb.location) {
+                                HStack {
+                                    Text(verb.headword).font(.custom("GentiumBookPlus", size: 18))
+                                    Spacer()
+                                    Text("\(verb.short), List of Verbs").font(.callout)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        }
+                    }
+                }
+                if !refs.isEmpty {
                 Section {
                     ForEach(refs) { ref in
                         NavigationLink(value: ref.location) {
@@ -196,6 +212,7 @@ struct GrammarRefsSheet: View {
                     }
                 } header: {
                     Text(parse)
+                }
                 }
             }
             .navigationTitle("Grammar")

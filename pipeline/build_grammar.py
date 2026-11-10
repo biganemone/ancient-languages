@@ -16,6 +16,7 @@ report's "missing" list) rather than silently pointing at the wrong page.
 Usage: python build_grammar.py <sources/grammars> <out grammar.db>   (report on stdout)
 """
 import copy
+import unicodedata
 import html
 import json
 import os
@@ -122,10 +123,12 @@ WINDOW = 60     # how far from the expected number to look
 SCHEMA = """
 CREATE TABLE grammar (id TEXT PRIMARY KEY, title TEXT, short TEXT, credit TEXT, language TEXT);
 CREATE TABLE section (grammar TEXT, seq INT, n TEXT, num INT, heading TEXT, path TEXT, html TEXT, plain TEXT,
-  PRIMARY KEY (grammar, n));
+  label TEXT, PRIMARY KEY (grammar, n));
 CREATE INDEX section_seq ON section(grammar, seq);
 CREATE TABLE ref (key TEXT, grammar TEXT, n TEXT, label TEXT, ord INT);
 CREATE INDEX ref_key ON ref(key);
+CREATE TABLE verb (key TEXT, grammar TEXT, headword TEXT, n TEXT, anchor TEXT);
+CREATE INDEX verb_key ON verb(key);
 """
 
 BETA_WORD = re.compile(r"[A-Za-z*()/\\=+|_^'0-9]+")
@@ -190,9 +193,13 @@ def to_html(div, units, gid):
         if name == "head":
             open_, close = ("<h4>", "</h4>")
         elif name == "p":
-            open_, close = "<p>", "</p>"
+            open_, close = (f'<p id="{e.get("id")}">' if e.get("id") else "<p>"), "</p>"
+        elif name == "bibl" and (e.get("n") or "").startswith("LSJ"):
+            tail(e, gk)          # Perseus's link to the LSJ entry: "LSJ" at the end of each verb
+            return
         elif name == "foreign" and g:
-            open_, close = '<span class="gk">', "</span>"
+            bold = "bold" in rend
+            open_, close = ('<b class="gk">', "</b>") if bold else ('<span class="gk">', "</span>")
         elif name in ("hi", "emph", "title", "term", "mentioned"):
             if "bold" in rend:
                 open_, close = "<b>", "</b>"
@@ -379,6 +386,57 @@ def fallback_heading(plain):
     return text[:70].rsplit(" ", 1)[0].rstrip(",;:") + "…"
 
 
+def greek_key(word):
+    """βαρῡ́νω, "-βαίνω", λέγω2 -> βαρυνω, βαινω, λεγω: no accents, breathings, quantity
+    or digits, final sigma as σ. The app makes lemmas into keys the same way."""
+    d = unicodedata.normalize("NFD", word)
+    return "".join(c for c in d if unicodedata.category(c)[0] == "L").lower().replace("ς", "σ")
+
+
+def appendix_pages(path, units):
+    """Divisions with no numbered sections, in a part with none: Smyth's
+    appendix, the List of Verbs ("Verbs beginning with β" ...). Each becomes
+    an unnumbered page ("verbs-β", label "Verbs: β"), and each paragraph an
+    entry, indexed by its headword (the first Greek word) for the lookup card.
+    -> [(n, heading, path, div, label, [(headword, anchor)])]"""
+    root = etree.parse(path, PARSER).getroot()
+    body = next(root.iter("body", "{http://www.tei-c.org/ns/1.0}body"), root)
+
+    def numbered(e):
+        return any((local(m) == "milestone" or (local(m).startswith("div") and m.get("n")))
+                   and (m.get("unit") or m.get("type") or "").lower() in units for m in e.iter())
+
+    out = []
+    for part in body:
+        if not local(part).startswith("div") or numbered(part):
+            continue
+        part_head = own_head(part)
+        for d in part:
+            if not local(d).startswith("div"):
+                continue
+            heading = own_head(d).replace("ς", "σ")           # Beta Code s at a word's end
+            letter = heading.split()[-1] if heading else str(len(out) + 1)
+            page = etree.Element("div", type="appendix")
+            entries = []
+            for c in d:
+                if local(c) in ("head", "pb", ""):
+                    continue
+                c = copy.deepcopy(c)
+                if local(c) == "p":
+                    first = next((f for f in c.iter() if local(f) == "foreign" and is_greek(f)), None)
+                    word = greek_text("".join(first.itertext())) if first is not None else ""
+                    word = re.split(r"[,\s(]", word.strip().lstrip("-"), maxsplit=1)[0].replace("-", "")
+                    if word:
+                        anchor = f"v{len(entries) + 1}"
+                        c.set("id", anchor)
+                        entries.append((word, anchor))
+                page.append(c)
+            label = "Verbs: " + letter if "verb" in part_head.lower() else heading
+            out.append(("verbs-" + letter if "verb" in part_head.lower() else f"appendix-{len(out) + 1}",
+                        heading, part_head.replace("Appendix: ", ""), page, label, entries))
+    return out
+
+
 def num(n):
     m = re.match(r"\d+", n)
     return int(m.group()) if m else None
@@ -420,6 +478,7 @@ def main(src, out):
             continue
         # book order: DCC's menu (Monro) lists a few topics out of sequence
         secs = sorted(sections(path, units), key=lambda t: num(t[0]) or 0)
+        pages = appendix_pages(path, units)
         rows = []
         seen = set()
         for seq, (n, heading, trail, el) in enumerate(secs):
@@ -428,9 +487,18 @@ def main(src, out):
             seen.add(n)
             plain = plain_text(el, units)
             heading = heading or fallback_heading(plain)
-            db.execute("INSERT INTO section VALUES (?,?,?,?,?,?,?,?)",
-                       (gid, seq, n, num(n), heading, trail, to_html(el, units, gid), plain))
+            db.execute("INSERT INTO section VALUES (?,?,?,?,?,?,?,?,?)",
+                       (gid, seq, n, num(n), heading, trail, to_html(el, units, gid), plain, "§" + n))
             rows.append((n, heading, plain))
+        for k, (n, heading, trail, el, label, entries) in enumerate(pages):
+            db.execute("INSERT INTO section VALUES (?,?,?,?,?,?,?,?,?)",
+                       (gid, len(secs) + k, n, None, heading, trail, to_html(el, units, gid),
+                        plain_text(el, units), label))
+            db.executemany("INSERT INTO verb VALUES (?,?,?,?,?)",
+                           [(greek_key(hw), gid, hw, n, anchor) for hw, anchor in entries])
+        if pages:
+            report["appendix"] = report.get("appendix", {})
+            report["appendix"][gid] = f"{len(pages)} pages, {sum(len(p[5]) for p in pages)} entries"
         db.execute("INSERT INTO grammar VALUES (?,?,?,?,?)", (gid, title, short, credit, "grc"))
         report["grammars"][gid] = f"{len(rows)} sections"
         if rows:

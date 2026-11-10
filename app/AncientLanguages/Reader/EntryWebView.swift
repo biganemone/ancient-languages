@@ -5,6 +5,8 @@ import WebKit
 /// with very long entries (λόγος, εἰμί) far better than attributed strings.
 struct EntryWebView: UIViewRepresentable {
     let html: String
+    /// An element id to scroll to and mark (an entry in Smyth's List of Verbs).
+    var anchor: String? = nil
     /// Tapped links (grammar cross-references: grammar://smyth/439). Without
     /// it, links do nothing.
     var onLink: ((URL) -> Void)? = nil
@@ -22,7 +24,12 @@ struct EntryWebView: UIViewRepresentable {
 
     func updateUIView(_ view: WKWebView, context: Context) {
         context.coordinator.onLink = onLink
-        guard context.coordinator.lastHTML != html else { return }
+        let anchorChanged = context.coordinator.anchor != anchor
+        context.coordinator.anchor = anchor
+        guard context.coordinator.lastHTML != html else {
+            if anchorChanged { context.coordinator.reveal(in: view) }   // same page, another entry
+            return
+        }
         context.coordinator.lastHTML = html
         // Base URL = bundle resources, so the CSS can load the bundled Gentium fonts.
         view.loadHTMLString(Self.page(html), baseURL: Bundle.main.resourceURL)
@@ -31,6 +38,19 @@ struct EntryWebView: UIViewRepresentable {
     final class Coordinator: NSObject, WKNavigationDelegate {
         var lastHTML: String?
         var onLink: ((URL) -> Void)?
+        var anchor: String?
+
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) { reveal(in: webView) }
+
+        /// Scroll the anchor's element to the top and mark it.
+        func reveal(in webView: WKWebView) {
+            guard let anchor, anchor.allSatisfy({ $0.isLetter || $0.isNumber }) else { return }
+            webView.evaluateJavaScript("""
+                document.querySelectorAll('.here').forEach(e => e.classList.remove('here'));
+                var e = document.getElementById('\(anchor)');
+                if (e) { e.classList.add('here'); e.scrollIntoView({block: 'start'}); window.scrollBy(0, -8); }
+                """)
+        }
 
         func webView(_ webView: WKWebView, decidePolicyFor action: WKNavigationAction,
                      decisionHandler: @escaping @MainActor (WKNavigationActionPolicy) -> Void) {
@@ -71,6 +91,7 @@ struct EntryWebView: UIViewRepresentable {
         .grammar table { border-collapse: collapse; font-size: .92em; margin: .5em 0; }
         .grammar td { padding: 2px 10px 2px 0; vertical-align: top; }
         .grammar ul { padding-left: 1.2em; }
+        .here { background: rgba(214, 178, 90, .2); border-radius: 4px; box-shadow: 0 0 0 4px rgba(214, 178, 90, .2); }
         .sc { font-variant: small-caps; }
         .fn { font-size: .85em; color: #8a7d65; }
         a { color: #6b5a3a; }

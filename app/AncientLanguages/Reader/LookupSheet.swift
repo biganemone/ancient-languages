@@ -106,7 +106,7 @@ struct LookupSheet: View {
         .onChange(of: chosen) { _, _ in lookupLemma() }
         .sheet(item: $grammarRefs) { request in
             if let store = library.grammar {
-                GrammarRefsSheet(store: store, parse: request.parse, refs: request.refs)
+                GrammarRefsSheet(store: store, parse: request.parse, refs: request.refs, verbs: request.verbs)
                     .presentationDetents([.medium, .large])
             }
         }
@@ -331,12 +331,21 @@ struct LookupSheet: View {
         return store.refs(keys: GrammarKeys.keys(parse: parse, irregularAorist: irregular), homeric: work.isHomeric)
     }
 
-    /// "§": opens the sections on this form; hidden when there are none.
+    /// The verb's principal parts in the grammar's list of verbs (Greek only).
+    private var currentGrammarVerbs: [GrammarVerb] {
+        guard LibraryLanguage(code: work.language) == .greek, let store = library.grammar,
+              let key = currentLemmaKey else { return [] }
+        return store.verbs(lemmaKey: key)
+    }
+
+    /// "§": opens the sections on this form, and the verb's principal parts;
+    /// hidden when there are none.
     @ViewBuilder private var grammarButton: some View {
         let refs = currentGrammarRefs
-        if !refs.isEmpty, let parse = currentParse {
+        let verbs = currentGrammarVerbs
+        if !refs.isEmpty || !verbs.isEmpty {
             Button {
-                grammarRefs = GrammarRefsRequest(parse: parse, refs: refs)
+                grammarRefs = GrammarRefsRequest(parse: currentParse ?? "", refs: refs, verbs: verbs)
             } label: {
                 Text("§").font(.custom("GentiumBookPlus-Bold", size: 18))
                     .padding(.horizontal, 8).padding(.vertical, 1)
@@ -448,5 +457,6 @@ struct LookupSheet: View {
 struct GrammarRefsRequest: Identifiable {
     let parse: String
     let refs: [GrammarRef]
-    var id: String { parse }
+    let verbs: [GrammarVerb]
+    var id: String { parse + verbs.map(\.id).joined() }
 }

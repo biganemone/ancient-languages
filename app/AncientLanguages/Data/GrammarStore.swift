@@ -8,10 +8,12 @@ struct GrammarBook: Identifiable, Hashable {
     let credit: String
 }
 
-/// A place in a grammar: "smyth", "1289".
+/// A place in a grammar: "smyth", "1289"; or an entry on an unnumbered page
+/// ("smyth", "verbs-β", anchor "v3": βαίνω in Smyth's List of Verbs).
 struct GrammarLocation: Hashable {
     let grammar: String
     let n: String
+    var anchor: String? = nil
 }
 
 /// A numbered section, without its text (for contents and search results).
@@ -20,6 +22,7 @@ struct GrammarSection: Identifiable, Hashable {
     let n: String
     let heading: String
     let path: String        // "Part IV: Syntax › The Genitive"
+    let label: String       // "§1289"; "Verbs: β" for a page of the List of Verbs
     var id: String { "\(grammar)/\(n)" }
     var location: GrammarLocation { GrammarLocation(grammar: grammar, n: n) }
 }
@@ -33,6 +36,14 @@ struct GrammarRef: Identifiable, Hashable {
     let label: String
     var id: String { "\(grammar)/\(n)/\(key)" }
     var location: GrammarLocation { GrammarLocation(grammar: grammar, n: n) }
+}
+
+/// A verb's entry in a grammar's list of principal parts (Smyth's List of Verbs).
+struct GrammarVerb: Identifiable, Hashable {
+    let headword: String    // "βαίνω"
+    let short: String       // "Smyth"
+    let location: GrammarLocation
+    var id: String { "\(location.grammar)/\(location.n)/\(location.anchor ?? "")" }
 }
 
 /// The bundled grammar.db, when the app was built with it.
@@ -74,9 +85,30 @@ final class GrammarStore {
             .filter { seen.insert("\($0.grammar)/\($0.n)").inserted }   // one row per section
     }
 
+    /// The entries for this lemma ("λέγω" has two: say, and gather).
+    func verbs(lemmaKey: String) -> [GrammarVerb] {
+        let key = Self.greekKey(lemmaKey)
+        guard !key.isEmpty else { return [] }
+        var out: [GrammarVerb] = []
+        try? db.query("SELECT headword, grammar, n, anchor FROM verb WHERE key = ? ORDER BY rowid", [key]) { r in
+            let g = r.string(1) ?? ""
+            out.append(GrammarVerb(headword: r.string(0) ?? "", short: book(g)?.short ?? g,
+                                   location: GrammarLocation(grammar: g, n: r.string(2) ?? "", anchor: r.string(3))))
+        }
+        return out
+    }
+
+    /// As pipeline/build_grammar.py's greek_key: letters only (no accents,
+    /// breathings, quantity or homograph digits), lower case, σ for ς.
+    static func greekKey(_ word: String) -> String {
+        String(String.UnicodeScalarView(word.decomposedStringWithCanonicalMapping.unicodeScalars
+            .filter { CharacterSet.letters.contains($0) && !CharacterSet.nonBaseCharacters.contains($0) }))
+            .lowercased().replacingOccurrences(of: "ς", with: "σ")
+    }
+
     /// Every section, in book order.
     func contents(_ grammar: String) -> [GrammarSection] {
-        sections("SELECT grammar, n, heading, path FROM section WHERE grammar = ? ORDER BY seq", [grammar])
+        sections("SELECT grammar, n, heading, path, label FROM section WHERE grammar = ? ORDER BY seq", [grammar])
     }
 
     /// A section number ("1289", "§1289a") goes straight there; otherwise words in the text.
@@ -85,21 +117,30 @@ final class GrammarStore {
         let number = q.trimmingCharacters(in: CharacterSet(charactersIn: "§ "))
         var out: [GrammarSection] = []
         if number.first?.isNumber == true {
-            out = sections("SELECT grammar, n, heading, path FROM section WHERE grammar = ? AND (n = ? OR n LIKE ?) ORDER BY seq LIMIT 30",
+            out = sections("SELECT grammar, n, heading, path, label FROM section WHERE grammar = ? AND (n = ? OR n LIKE ?) ORDER BY seq LIMIT 30",
                            [grammar, number, number + "_"])
         }
-        let words = sections("SELECT grammar, n, heading, path FROM section WHERE grammar = ? AND (plain LIKE ? OR heading LIKE ?) ORDER BY seq LIMIT 200",
+        let words = sections("SELECT grammar, n, heading, path, label FROM section WHERE grammar = ? AND (plain LIKE ? OR heading LIKE ?) ORDER BY seq LIMIT 200",
                              [grammar, "%\(q)%", "%\(q)%"])
-        return out + words.filter { w in !out.contains(w) }
+        // a Greek verb, however accented: its page in the List of Verbs
+        let key = Self.greekKey(q)
+        var verbs: [GrammarSection] = []
+        if key.unicodeScalars.contains(where: { (0x370...0x3FF).contains(Int($0.value)) }) {
+            verbs = sections("SELECT DISTINCT s.grammar, s.n, s.heading, s.path, s.label FROM verb v JOIN section s ON s.grammar = v.grammar AND s.n = v.n WHERE v.grammar = ? AND v.key LIKE ? ORDER BY s.seq",
+                             [grammar, key + "%"])
+        }
+        var seen = Set<String>()
+        return (out + verbs + words).filter { seen.insert($0.id).inserted }
     }
 
     func section(_ loc: GrammarLocation) -> (section: GrammarSection, html: String)? {
         var result: (section: GrammarSection, html: String)?
-        try? db.query("SELECT grammar, n, heading, path, html FROM section WHERE grammar = ? AND n = ?",
+        try? db.query("SELECT grammar, n, heading, path, label, html FROM section WHERE grammar = ? AND n = ?",
                       [loc.grammar, loc.n]) { r in
             result = (section: GrammarSection(grammar: r.string(0) ?? "", n: r.string(1) ?? "",
-                                              heading: r.string(2) ?? "", path: r.string(3) ?? ""),
-                      html: r.string(4) ?? "")
+                                              heading: r.string(2) ?? "", path: r.string(3) ?? "",
+                                              label: r.string(4) ?? "§" + (r.string(1) ?? "")),
+                      html: r.string(5) ?? "")
         }
         return result
     }
@@ -118,7 +159,8 @@ final class GrammarStore {
         var out: [GrammarSection] = []
         try? db.query(sql, args) { r in
             out.append(GrammarSection(grammar: r.string(0) ?? "", n: r.string(1) ?? "",
-                                      heading: r.string(2) ?? "", path: r.string(3) ?? ""))
+                                      heading: r.string(2) ?? "", path: r.string(3) ?? "",
+                                      label: r.string(4) ?? "§" + (r.string(1) ?? "")))
         }
         return out
     }
