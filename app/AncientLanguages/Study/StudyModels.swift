@@ -84,17 +84,6 @@ struct VocabEntry: Identifiable, Hashable {
     func cardKey(_ d: CardDirection) -> String { "\(key)#\(d.rawValue)" }
 }
 
-/// The schedule of one card (an entry in one direction).
-struct CardState: Codable, Hashable {
-    var memory: FSRS.Memory?
-    var due: Date
-    var lastReview: Date?
-    var reps = 0
-    var lapses = 0
-    var introduced: Date
-    /// The token the card was introduced from (for its example line).
-    var exampleToken: Int?
-}
 
 /// A word added from the reader to "My words".
 struct ManualWord: Codable, Hashable {
@@ -102,10 +91,4 @@ struct ManualWord: Codable, Hashable {
     var tokenID: Int
     var workURN: String
     var added = Date()
-}
-
-/// Cards a deck has shown on one day.
-struct DayCount: Codable, Hashable {
-    var new = 0
-    var reviewed = 0     // all cards answered (new ones included), first answer each
 }

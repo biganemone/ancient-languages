@@ -1,4 +1,5 @@
 import Foundation
+import StudyCore
 
 /// Reads works, alignment blocks, Greek segments and tokens from texts.db.
 final class TextStore {

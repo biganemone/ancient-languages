@@ -1,4 +1,5 @@
 import Foundation
+import StudyCore
 
 /// A reference grammar in grammar.db (pipeline/build_grammar.py): Smyth, Monro.
 struct GrammarBook: Identifiable, Hashable {

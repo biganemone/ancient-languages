@@ -1,4 +1,5 @@
 import SwiftUI
+import StudyCore
 
 /// The card that rises when a word is tapped: form, lemma, parse, a one-line
 /// gloss, then the full entry in the chosen lexicon. For works without

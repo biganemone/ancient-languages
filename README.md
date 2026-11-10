@@ -39,7 +39,7 @@ Parses come from hand-made treebanks where they exist: Perseus, Gorman, PROIEL, 
    - A few sources have to be fetched by hand (Marcion's Coptic files, Autenrieth), and Morpheus is needed only when adding texts without a treebank. See [`pipeline/README.md`](pipeline/README.md).
 2. **Open `app/AncientLanguages.xcodeproj`** in Xcode 16 or later and run it on a simulator. To run on a device, first choose your team under *Signing & Capabilities*.
 
-The app needs iOS 17 or later. It has no third-party Swift dependencies: it uses the system SQLite, Compression, CryptoKit and WebKit.
+The app needs iOS 17 or later. It uses the system SQLite, Compression, CryptoKit and WebKit, and one Swift package of its own, [StudyCore](../StudyCore) (SQLite, FSRS, the dictionary reader and entry view). StudyCore is shared with a sister app. Until it is published, clone it next to this repository (`../StudyCore`); Xcode finds it by that relative path.
 
 ## How texts are stored
 

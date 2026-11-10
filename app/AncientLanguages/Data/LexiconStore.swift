@@ -1,4 +1,5 @@
 import Foundation
+import StudyCore
 
 /// The dictionaries the app knows about.
 enum Lexicon: String, CaseIterable, Identifiable {
@@ -99,13 +100,14 @@ enum LexiconFiles {
     }
 }
 
-/// Reads lexicon.db (or a downloaded lexicon-<language>.db). Lemma → entry resolution is precomputed by the pipeline
-/// (table `resolve`), so a tap is a couple of indexed queries.
+/// Reads lexicon.db (or a downloaded lexicon-<language>.db) through StudyCore's LexiconReader.
+/// Lemma → entry resolution is precomputed by the pipeline (table `resolve`), so a tap is a
+/// couple of indexed queries.
 final class LexiconStore {
-    private let db: SQLiteDatabase
+    private let reader: LexiconReader
 
     init(url: URL) throws {
-        db = try SQLiteDatabase(url: url)
+        reader = try LexiconReader(url: url)
     }
 
     /// `partOfSpeech` (a Coptic SCRIPTORIUM tag such as "N" or "V") picks
@@ -113,27 +115,15 @@ final class LexiconStore {
     func lookup(lemmaKey: String, partOfSpeech: String? = nil) -> Lookup {
         var result = Lookup()
         let wanted = Self.posClass(partOfSpeech)
-        var targets: [(dict: String, target: Int, how: String)] = []
-        try? db.query("SELECT dict, target, how FROM resolve WHERE lemma_key = ? ORDER BY rowid",
-                      [lemmaKey]) { r in
-            targets.append((r.string(0) ?? "", r.int(1), r.string(2) ?? ""))
+        let resolved = reader.resolve(lemmaKey: lemmaKey)
+        for e in resolved.entries {
+            guard let lexicon = Lexicon(rawValue: e.dictionary) else { continue }
+            result.entries[lexicon, default: []].append(
+                LexiconEntry(id: e.id, lexicon: lexicon, headword: e.headword, html: e.html,
+                             match: e.match, partOfSpeech: e.partOfSpeech))
         }
-        var glosses: [(def: String, pos: String?)] = []
-        for t in targets {
-            if t.dict == "short" {
-                try? db.query("SELECT def, pos FROM shortdef WHERE rowid = ?", [t.target]) { r in
-                    if let def = r.string(0) { glosses.append((def, r.string(1))) }
-                }
-            } else if let lexicon = Lexicon(rawValue: t.dict) {
-                try? db.query("SELECT id, headword, html, pos FROM entry WHERE id = ?", [t.target]) { r in
-                    let html = Self.inflate(r.data(2)) ?? ""
-                    result.entries[lexicon, default: []].append(
-                        LexiconEntry(id: r.int(0), lexicon: lexicon, headword: r.string(1) ?? "",
-                                     html: html, match: t.how, partOfSpeech: r.string(3)))
-                }
-            }
-        }
-        result.shortDefinition = (glosses.first(where: { wanted != nil && $0.pos == wanted }) ?? glosses.first)?.def
+        let glosses = resolved.shortDefinitions
+        result.shortDefinition = (glosses.first(where: { wanted != nil && $0.partOfSpeech == wanted }) ?? glosses.first)?.text
         if let wanted {
             // the homograph with the right part of speech first
             for (lexicon, entries) in result.entries {
@@ -156,11 +146,5 @@ final class LexiconStore {
         case "NUM": return "numeral"
         default: return nil
         }
-    }
-
-    /// Entries are stored as raw DEFLATE, which is what Apple calls `.zlib`.
-    private static func inflate(_ data: Data?) -> String? {
-        guard let data, let out = try? (data as NSData).decompressed(using: .zlib) else { return nil }
-        return String(data: out as Data, encoding: .utf8)
     }
 }

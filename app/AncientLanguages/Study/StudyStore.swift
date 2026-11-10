@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import StudyCore
 
 /// Decks, every card's schedule, and the words set aside, kept as one JSON
 /// file in Application Support (like notes and bookmarks). Cards are keyed by

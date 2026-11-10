@@ -2,6 +2,7 @@ import Compression
 import CryptoKit
 import Foundation
 import Observation
+import StudyCore
 
 /// The reader's own database of texts (Application Support/Library/library.db).
 ///

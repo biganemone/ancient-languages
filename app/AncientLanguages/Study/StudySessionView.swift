@@ -1,4 +1,5 @@
 import SwiftUI
+import StudyCore
 
 /// A day's cards for one deck: tap to see the answer, then "Missed it" or
 /// "Got it". A missed card comes back a few cards later.

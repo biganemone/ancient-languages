@@ -1,4 +1,5 @@
 import SwiftUI
+import StudyCore
 
 /// The Reference tab: the grammars, each with its contents and a search.
 struct ReferenceTab: View {
