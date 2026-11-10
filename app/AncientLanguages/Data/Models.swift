@@ -11,8 +11,8 @@ struct Work: Identifiable, Hashable {
     let englishURN: String
     let translator: String
     let scope: String         // "complete", or e.g. "Book 1"
-    let parseSource: String   // treebank | morpheus | scriptorium | coptic-nlp | oe-forms | oshb | dcs
-    let language: String      // grc | cop | lat | ang | hbo | san
+    let parseSource: String   // treebank | morpheus | scriptorium | coptic-nlp | oe-forms | oshb | dcs | non-forms
+    let language: String      // grc | cop | lat | ang | hbo | san | non
     let credit: String        // edition/annotation credit (Coptic works)
 
     enum Kind: String { case verse, prose }
@@ -21,6 +21,7 @@ struct Work: Identifiable, Hashable {
     var isLatin: Bool { language == "lat" }
     var isCoptic: Bool { language == "cop" }
     var isOldEnglish: Bool { language == "ang" }
+    var isOldNorse: Bool { language == "non" }    // normalized spelling; nothing bundled, dictionaries downloaded
     var isHebrew: Bool { language == "hbo" }      // read right to left
     var isSanskrit: Bool { language == "san" }    // IAST, from the Digital Corpus of Sanskrit
     var isCodex: Bool { form == "codex" }   // cited by codex page and line

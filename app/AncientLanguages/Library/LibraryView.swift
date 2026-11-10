@@ -40,18 +40,23 @@ struct LibraryView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                if !searching, !modules.pending.isEmpty {
+                if !searching, !modules.pending.isEmpty || !modules.staleDictionaries.isEmpty {
                     Section {
                         let pending = modules.pending
+                        let dictionaries = modules.staleDictionaries
                         Button {
                             modules.add(pending)
+                            for language in dictionaries { modules.installDictionary(language: language) }
                         } label: {
-                            Label("Download \(pending.count == 1 ? "1 text" : "\(pending.count) texts") again",
+                            Label(againLabel(texts: pending.count, dictionaries: dictionaries.count),
                                   systemImage: "arrow.down.circle")
                         }
-                        .disabled(pending.allSatisfy { modules.status[$0.urn] != nil })
+                        .disabled(pending.allSatisfy { modules.status[$0.urn] != nil }
+                                  && dictionaries.allSatisfy { modules.dictionaryStatus[$0] != nil })
                     } footer: {
-                        Text("This version of the app has new editions of the texts, so texts you downloaded need downloading again.")
+                        Text(modules.pending.isEmpty
+                             ? "This version of the app has new editions of the dictionaries, so the ones you downloaded need downloading again."
+                             : "This version of the app has new editions of the texts, so texts you downloaded need downloading again.")
                     }
                 }
                 if !searching {
@@ -284,9 +289,26 @@ struct LibraryView: View {
         let back = all ? "You can add \(works.count == 1 ? "it" : "them") back at any time from Add Texts."
             : none ? "To add \(works.count == 1 ? "it" : "them") back you'll need to download \(works.count == 1 ? "it" : "them") again."
             : "You can add them back from Add Texts (some will need downloading again)."
+        // the last of a language's texts: its downloaded dictionaries go too
+        let languages = Set(works.map(\.language))
+        let removedURNs = Set(works.map(\.urn))
+        let emptied = languages.filter { lang in
+            library.hasDictionary(language: lang)
+                && !library.works.contains { $0.language == lang && !removedURNs.contains($0.urn) }
+        }
+        let dictionaries = emptied.isEmpty ? "" : " The " + emptied.sorted()
+            .map { LibraryLanguage(code: $0)?.label ?? $0 }.joined(separator: " and ")
+            + " dictionaries are removed too; they download again with the first text you add."
         removing = Removal(title: "Remove \(name)?",
-                           message: "Your highlights, notes and flashcards are kept. " + back,
+                           message: "Your highlights, notes and flashcards are kept. " + back + dictionaries,
                            urns: works.map(\.urn))
+    }
+
+    /// "Download 3 texts again", "Download 2 texts and the dictionaries again"
+    private func againLabel(texts: Int, dictionaries: Int) -> String {
+        let t = texts == 0 ? nil : texts == 1 ? "1 text" : "\(texts) texts"
+        let d = dictionaries == 0 ? nil : "the dictionaries"
+        return "Download \([t, d].compactMap { $0 }.joined(separator: " and ")) again"
     }
 
     private func subtitle(_ work: Work) -> String {
@@ -312,6 +334,7 @@ struct LibraryView: View {
         case .hebrew: return Self.hebrewCredits
         case .sanskrit: return Self.sanskritCredits
         case .coptic: return Self.copticCredits
+        case .oldNorse: return Self.norseCredits
         }
     }
 
@@ -320,5 +343,7 @@ struct LibraryView: View {
     private static let copticCredits = "Gospel of Thomas: text and annotation from Coptic SCRIPTORIUM (CC BY). Acts of Pilate (two fragments of a White Monastery codex, after Lacau 1904): text and annotation from Coptic SCRIPTORIUM (Lydia Bremer-McCollum, Nicholas Wagner; CC BY 4.0). Nag Hammadi and Berlin Codex texts and Crum's Coptic Dictionary from Marcion by Milan Konvička (GPL), analysed automatically with the Coptic SCRIPTORIUM NLP tools. Sahidic New Testament: Sahidic Bible 2 (Christian Askeland, Matthias Schulz; INTF Münster), CC BY-SA, transcribing the principal manuscripts, with the verses they lack from G. W. Horner's edition (1911–24, public domain), analysed automatically with the Coptic SCRIPTORIUM NLP tools; English from the Berean Standard Bible. Comprehensive Coptic Lexicon by BBAW and DDGLC via KELLIA (CC BY-SA). Noto Sans Coptic by Google (OFL)."
     private static let oldEnglishCredits = "Beowulf: Fr. Klaeber's text (1922) and glossary, and James M. Garnett's translation (1882), from the Perseus Digital Library (CC BY-SA); lemmas and parses taken from Klaeber's glossary. The other poems: The Anglo-Saxon Poetic Records, ed. G. P. Krapp and E. V. K. Dobbie, in Greg Hidley's electronic text (Oxford Text Archive, CC BY-SA), as collected by the Classical Language Toolkit; lemmas and parses automatic, from Beowulf and Ondřej Tichý's Old English morphological generator (CC BY 4.0). English, from Project Gutenberg (public domain): Cosette Faust and Stith Thompson, Old English Poems (1918); James M. Garnett, Elene, Judith, Brunanburh, Maldon and The Dream of the Rood (1889); Robert Kilburn Root, Andreas (1899); James Hall Pitman, The Old English Physiologus (1921). Bosworth and Toller's Anglo-Saxon Dictionary (1898) and Supplement (1921), public domain, from the Germanic Lexicon Project, as assembled by Madeleine Thompson's btc_anglo_saxon (MIT). Gentium Book Plus by SIL (OFL)."
     private static let hebrewCredits = "Hebrew Bible: the Westminster Leningrad Codex (public domain), with lemmas and morphology from the Open Scriptures Hebrew Bible (CC BY 4.0); Brown–Driver–Briggs and Strong's dictionaries from the Open Scriptures Hebrew Lexicon (CC BY 4.0; text public domain); short definitions from STEPBible's Translators Brief Lexicon (TBESH, CC BY 4.0); English from the Berean Standard Bible (public domain). Noto Serif Hebrew by Google (OFL)."
+    // Sources as recorded in pipeline/README.md ("Old Norse sources"); keep the two in step.
+    private static let norseCredits = "Poetic Edda: text and translation from Edward Pettit, The Poetic Edda: A Dual-Language Edition (Open Book Publishers, 2023; CC BY-NC 4.0). Prose Edda, Njáls saga and Egils saga: Finnur Jónsson's editions (1907, 1908, 1894; public domain), from the Internet Archive scans, cleaned for this app; English (public domain): Arthur Gilchrist Brodeur, The Prose Edda (1916); George Webbe Dasent, The Story of Burnt Njal (1861); W. C. Green, The Story of Egil Skallagrimsson (1893). Lemmas and parses automatic, from Zoëga's headwords; the saga texts' OCR corrected against NeuralMIcePaHC (CLARIN-IS, CC BY 4.0). Geir T. Zoëga's Concise Dictionary of Old Icelandic (1910) and Cleasby and Vigfússon's Icelandic-English Dictionary (1874), public domain, from Stscoundrel's digitizations. Gentium Book Plus by SIL (OFL)."
     private static let sanskritCredits = "Bhagavad Gītā: text, lemmas and analyses from the Digital Corpus of Sanskrit by Oliver Hellwig (CC BY 4.0), the critical edition's text; verse numbers from the gita/gita dataset (the Unlicense); English: Annie Besant's translation (4th edition, 1922; public domain), from Wikisource. Upaniṣads: text, lemmas and analyses from the Digital Corpus of Sanskrit (CC BY 4.0); sections numbered from the mūla text of Śaṅkara's commentaries (GRETIL) and from Sanskrit Wikisource, which also supply the few passages DCS lacks (shown unanalysed); English: F. Max Müller, The Upanishads (Sacred Books of the East 1 and 15, 1879–84; public domain), from sacred-texts.com. Macdonell's Practical Sanskrit Dictionary (1893) and Monier-Williams's Sanskrit-English Dictionary (1899) from the Cologne Digital Sanskrit Dictionaries (CC BY-SA 4.0); short definitions from the Digital Corpus of Sanskrit. Gentium Book Plus by SIL (OFL)."
 }

@@ -11,14 +11,17 @@ import sys
 from datetime import datetime, timezone
 
 
-def main(path):
+def main(*paths):
+    """One build id for every database given (the texts, and the downloadable
+    dictionaries, which the app also checks against the catalog's build)."""
     build = datetime.now(timezone.utc).strftime("%Y%m%dT%H%MZ")
-    db = sqlite3.connect(path)
-    db.execute("CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT)")
-    db.execute("INSERT OR REPLACE INTO meta VALUES ('build', ?)", (build,))
-    db.commit()
-    print(f"{path}: build {build}")
+    for path in paths:
+        db = sqlite3.connect(path)
+        db.execute("CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT)")
+        db.execute("INSERT OR REPLACE INTO meta VALUES ('build', ?)", (build,))
+        db.commit()
+        print(f"{path}: build {build}")
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(*sys.argv[1:])

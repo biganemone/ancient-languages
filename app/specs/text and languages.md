@@ -55,4 +55,6 @@ The Gospel of Thomas
 Beowulf
 
 ## Other languages 
-If we add other languages (e.g., Norse or Assyrian) consider making the whole language downloadable, depending on how much space we have 
+If we add other languages (e.g., Norse or Assyrian) consider making the whole language downloadable, depending on how much space we have
+
+Old Norse (added Nov 2026) is the first fully downloadable language: the Poetic Edda, the Prose Edda, Njáls saga and Egils saga download as texts, and Zoëga and Cleasby–Vigfússon as a dictionary module with the first of them. Nothing of it ships with the app. 

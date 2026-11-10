@@ -10,7 +10,7 @@ import Foundation
 /// - Hopper's Word Study Tool takes a Unicode form: `morph?l=ἄειδε&la=greek`.
 enum PerseusLinks {
     static func hopper(work: Work, cite: String) -> URL? {
-        if work.isBible || work.isOldEnglish || work.isSanskrit { return nil }   // not at Perseus in this form (SBLGNT; Beowulf: unchecked)
+        if work.isBible || work.isOldEnglish || work.isOldNorse || work.isSanskrit { return nil }   // not at Perseus in this form (SBLGNT; Beowulf: unchecked)
         let (urn, ref) = split(work: work, cite: cite)
         var c = URLComponents(string: "https://www.perseus.tufts.edu/hopper/text")
         c?.queryItems = [URLQueryItem(name: "doc", value: "\(urn):\(ref)")]
@@ -27,7 +27,7 @@ enum PerseusLinks {
     }
 
     static func scaife(work: Work, cite: String) -> URL? {
-        if work.isBible || work.isOldEnglish || work.isSanskrit { return nil }
+        if work.isBible || work.isOldEnglish || work.isOldNorse || work.isSanskrit { return nil }
         if work.form == "hymns" {
             let (urn, ref) = split(work: work, cite: cite)
             return URL(string: "https://scaife.perseus.org/reader/\(urn).perseus-grc2:\(ref)/")
@@ -51,7 +51,7 @@ enum PerseusLinks {
     static func citation(work: Work, cite: String) -> String {
         if work.form == "hymns" { return "Homeric Hymn \(cite)" }
         if work.isBible { return "\(work.title) \(cite.replacingOccurrences(of: ".", with: ":"))" }
-        if work.author == work.title || work.isOldEnglish || work.isSanskrit { return "\(work.title) \(cite)" }
+        if work.author == work.title || work.isOldEnglish || work.isOldNorse || work.isSanskrit { return "\(work.title) \(cite)" }
         return "\(work.author), \(work.title) \(cite)"
     }
 }

@@ -20,12 +20,13 @@ def main(db_path, shipped_path, modules_dir, out, downloads=""):
     build = db.execute("SELECT value FROM meta WHERE key = 'build'").fetchone()[0]
     downloads = (downloads or "").replace("{build}", build).rstrip("/")
     shipped = {u for (u,) in sqlite3.connect(shipped_path).execute("SELECT urn FROM work")}
-    manifest = {}
+    manifest, dict_manifest = {}, {}
     mpath = os.path.join(modules_dir, "modules.json")
     if os.path.exists(mpath):
         m = json.load(open(mpath))
         if m.get("build") == build:
             manifest = m["modules"]
+            dict_manifest = m.get("dictionaries", {})
     works = []
     for urn, lang, author, title, translator, scope, first, last in db.execute(
             "SELECT urn, COALESCE(NULLIF(language, ''), 'grc'), author, title, translator, scope, token_first, "
@@ -35,8 +36,14 @@ def main(db_path, shipped_path, modules_dir, out, downloads=""):
         works.append(dict(urn=urn, language=lang, author=author, title=title, translator=translator or "",
                           scope=scope or "complete", words=words, bundled=urn in shipped,
                           module=mod.get("file"), bytes=mod.get("bytes"), sha256=mod.get("sha256")))
+    # downloadable dictionaries (optional field; older apps ignore it): one entry
+    # per dictionary, those sharing a module file listed with the same file
+    dictionaries = [dict(language=lang, id=d["id"], title=d["title"], module=m["file"], bytes=m["bytes"],
+                         sha256=m["sha256"])
+                    for lang, m in sorted(dict_manifest.items()) for d in m["dictionaries"]]
     with open(out, "w", encoding="utf-8") as f:
-        json.dump(dict(version=2, build=build, downloads=downloads, works=works), f, ensure_ascii=False, indent=0)
+        json.dump(dict(version=2, build=build, downloads=downloads, works=works, dictionaries=dictionaries), f,
+                  ensure_ascii=False, indent=0)
     print(f"{out}: {len(works)} works, {sum(1 for w in works if w['module'])} with modules, build {build}",
           f"downloads {downloads}" if downloads else "(no downloads URL)")
 

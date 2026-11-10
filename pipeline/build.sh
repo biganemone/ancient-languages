@@ -57,6 +57,8 @@ aut=sources/autenrieth/autenrieth.xml
 [ -f "$aut" ] || { echo "note: $aut not found; building without Autenrieth"; aut=""; }
 # Old English: Beowulf, lemmatised from Klaeber's glossary
 python3 build_oldenglish.py sources build/texts.db > build/oldenglish_report.json
+# Old Norse: the Poetic Edda (Pettit), the Prose Edda, Njáls saga and Egils saga (all downloads)
+python3 build_oldnorse.py sources build/texts.db > build/oldnorse_report.json
 # Bosworth–Toller as entries (madeleineth/btc_anglo_saxon's parser, MIT)
 [ -f build/oe_bt.json ] || bzip2 -ckd sources/btc_anglo_saxon/db/oe_bosworthtoller.txt.bz2 \
   | python3 sources/btc_anglo_saxon/db/parse_scanned_bt.py > build/oe_bt.json
@@ -70,19 +72,21 @@ python3 build_lexicon.py sources/LSJLogeion sources/MiddleLiddell \
   sources/canonical-angLit/data/anon/klaeber_glossary/anon.klaeber_glossary.perseus-mul1.xml build/oe_bt.json \
   sources/HebrewLexicon sources \
   > build/lexicon_report.json
+# the Old Norse dictionaries: a downloadable module of their own (lexicon_non.db), not in lexicon.db
+python3 build_lexicon_non.py sources build/texts.db build/lexicon_non.db > build/lexicon_non_report.json
 # the app ships a compact copy of texts.db (shared lemma/tag rows, no stored word forms)
 rm -f build/texts_app.db
 # second aorists for flashcards: Morpheus stem types, cached in data/ (refreshed only with MORPHEUS set)
 [ -n "${MORPHEUS:-}" ] && python3 aorists.py build/texts.db
-python3 compact_texts.py build/texts.db build/texts_app.db build/lexicon.db
-python3 stamp_build.py build/texts_app.db
+python3 compact_texts.py build/texts.db build/texts_app.db build/lexicon.db build/lexicon_non.db
+python3 stamp_build.py build/texts_app.db build/lexicon_non.db
 # the app ships the default texts (defaults.py), compressed: on first launch it
 # inflates them into its own library database, which texts are added to and
 # removed from. Every dictionary ships as is.
 python3 export_module.py build/texts_app.db build/texts_default.db --defaults --deflate "$out/texts.db.z"
 rm -f "$out/texts.db"
 # a downloadable module per work, and the catalog of every text on offer
-python3 make_modules.py build/texts_app.db build/modules
+python3 make_modules.py build/texts_app.db build/modules --dictionary non=build/lexicon_non.db
 # the modules are published as a GitHub Release per build (publish_release.sh);
 # set DOWNLOADS_URL= (empty) for a build that won't be published
 release_url='https://github.com/biganemone/ancient-languages/releases/download/texts-{build}'

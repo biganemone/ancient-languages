@@ -219,7 +219,7 @@ struct LexiconPeek: View {
     }
 
     var body: some View {
-        let lookup = library.lexicon?.lookup(lemmaKey: lemmaKey) ?? Lookup()
+        let lookup = library.lookup(lemmaKey: lemmaKey)
         VStack(spacing: 10) {
             Picker("Lexicon", selection: $current) {
                 ForEach(available) { Text($0.shortName).tag($0) }

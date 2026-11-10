@@ -72,12 +72,17 @@ struct StudyTab: View {
 }
 
 /// The reader's texts (library.db, which texts are added to and removed from)
-/// and the bundled lexicons, shared by every view.
+/// and the lexicons, shared by every view: the bundled lexicon.db, plus any
+/// downloaded dictionary files (Library/lexicon-<language>.db, Old Norse's).
 @MainActor
 @Observable
 final class Library {
     private(set) var texts: TextStore?
     private(set) var lexicon: LexiconStore?
+    /// Downloaded dictionaries, by language code. Lemma keys prefixed with
+    /// that code ("non:…") are looked up there. A missing file isn't a
+    /// `problem`: the lookup sheet offers to download it.
+    private(set) var extraLexicons: [String: LexiconStore] = [:]
     private(set) var works: [Work] = []
     private(set) var problem: String?
     /// False while library.db is being made (first launch, or after an update).
@@ -112,6 +117,7 @@ final class Library {
         do {
             let texts = try TextStore(url: LibraryDatabase.url, mode: .readOnly)
             if lexicon == nil { lexicon = try LexiconStore(url: lexiconURL) }
+            if extraLexicons.isEmpty { reloadDictionaries() }
             works = try texts.works()
             self.texts = texts
             problem = nil
@@ -120,4 +126,28 @@ final class Library {
             problem = "\(error)"
         }
     }
+
+    /// (Re)opens the downloaded dictionary files: after one is installed,
+    /// replaced or deleted (they're opened immutable, so a replaced file
+    /// needs a new connection).
+    func reloadDictionaries() {
+        var stores: [String: LexiconStore] = [:]
+        for code in LexiconFiles.installedLanguages() {
+            if let store = try? LexiconStore(url: LexiconFiles.url(language: code)) { stores[code] = store }
+        }
+        extraLexicons = stores
+    }
+
+    /// Looks a lemma up in the lexicon that holds it: a downloaded
+    /// dictionary for its language prefix ("non:"), otherwise lexicon.db.
+    func lookup(lemmaKey: String, partOfSpeech: String? = nil) -> Lookup {
+        if let colon = lemmaKey.firstIndex(of: ":"),
+           let store = extraLexicons[String(lemmaKey[..<colon])] {
+            return store.lookup(lemmaKey: lemmaKey, partOfSpeech: partOfSpeech)
+        }
+        return lexicon?.lookup(lemmaKey: lemmaKey, partOfSpeech: partOfSpeech) ?? Lookup()
+    }
+
+    /// Whether a downloaded dictionary for this language is open.
+    func hasDictionary(language: String) -> Bool { extraLexicons[language] != nil }
 }

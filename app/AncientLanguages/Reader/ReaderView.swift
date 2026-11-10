@@ -295,7 +295,7 @@ struct ReaderView: View {
             if work.isCoptic {
                 Button("Coptic signs", systemImage: "info.circle") { showCopticSigns = true }
             }
-            if !work.isCoptic, let cite = currentCite {
+            if !work.isCoptic && !work.isOldNorse, let cite = currentCite {
                 if let url = PerseusLinks.hopper(work: work, cite: cite) {
                     Button("Open in Perseus (Hopper)", systemImage: "safari") { openURL(url) }
                 }
@@ -576,8 +576,10 @@ struct ReaderView: View {
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)
-        .padding(.trailing, 12)
+        // On Face ID iPhones: down in the home-indicator strip, in from the curved corner
+        .padding(.trailing, PageFrame.hasHomeStrip(PageFrame.windowInsets) ? 36 : 12)
         .padding(.bottom, 2)
+        .offset(y: PageFrame.hasHomeStrip(PageFrame.windowInsets) ? PageFrame.windowInsets.bottom - 8 : 0)
         .accessibilityLabel(focusMode ? "Show bars" : "Hide bars")
     }
 
@@ -624,7 +626,7 @@ struct ReaderView: View {
             }
         }
         func language(_ w: Work) -> String {
-            w.isLatin ? "Latin" : w.isCoptic ? "Coptic" : w.isOldEnglish ? "Old English"
+            w.isLatin ? "Latin" : w.isCoptic ? "Coptic" : w.isOldEnglish ? "Old English" : w.isOldNorse ? "Old Norse"
                 : w.isHebrew ? "Hebrew" : w.isSanskrit ? "Sanskrit" : "Greek"
         }
         var result: [String: Companion] = [:]

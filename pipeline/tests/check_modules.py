@@ -2,6 +2,11 @@
 app does it (Data/LibraryDatabase.swift), using the same SQL.
 
   python tests/check_modules.py <texts.db.z (shipped)> <modules dir> <urn to add> <urn to remove>
+
+Then the dictionary modules (modules.json "dictionaries"): each opens as a
+lexicon (entry, resolve, meta), is of the texts' build, and resolves the
+lemmas of its language's text modules (the share of tokens whose lemma
+opens an entry in each dictionary is printed).
 """
 import os
 import sqlite3
@@ -87,6 +92,37 @@ def main(bundle, modules, add, remove):
     # the removed text, added back from the full-build module, matches the module
     inflate(os.path.join(modules, manifest["modules"][remove]["file"]), mod)
     print("re-added", copy_works(lib, mod), counts(lib, remove))
+    check_dictionaries(modules, manifest, tmp)
+
+
+def check_dictionaries(modules, manifest, tmp):
+    for lang, d in manifest.get("dictionaries", {}).items():
+        path = os.path.join(tmp, f"lexicon-{lang}.db")
+        inflate(os.path.join(modules, d["file"]), path)
+        lx = sqlite3.connect(path)
+        build = lx.execute("SELECT value FROM meta WHERE key='build'").fetchone()[0]
+        assert build == manifest["build"], f"{d['file']} is build {build}, modules {manifest['build']}"
+        n_entries = lx.execute("SELECT COUNT(*) FROM entry").fetchone()[0]
+        resolved = {}
+        for dict_id, key in lx.execute("SELECT DISTINCT dict, lemma_key FROM resolve"):
+            resolved.setdefault(dict_id, set()).add(key)
+        # the language's works: their tokens' lemmas
+        tokens = 0
+        hits = {k: 0 for k in resolved}
+        mod = os.path.join(tmp, "dm.db")
+        for urn, m in manifest["modules"].items():
+            inflate(os.path.join(modules, m["file"]), mod)
+            db = sqlite3.connect(mod)
+            if db.execute("SELECT COUNT(*) FROM work WHERE language = ?", (lang,)).fetchone()[0] == 0:
+                db.close()
+                continue
+            for (key,) in db.execute("SELECT l.key FROM token t JOIN lemma l ON l.id = t.lemma_id"):
+                tokens += 1
+                for k in hits:
+                    hits[k] += key in resolved[k]
+            db.close()
+        cover = {k: f"{100 * v / max(tokens, 1):.1f}%" for k, v in hits.items()}
+        print(f"dictionary {d['file']} ({lang}): build ok, {n_entries} entries; {tokens} tokens, lemmas resolved {cover}")
 
 
 if __name__ == "__main__":

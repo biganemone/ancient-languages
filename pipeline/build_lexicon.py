@@ -20,6 +20,7 @@ import coptic
 import greek
 import latin
 import oldenglish
+import oldnorse
 import hebrew
 import sanskrit
 
@@ -864,6 +865,8 @@ def main(lsj_dir, ml_dir, shortdefs, texts_db, out, ccl_path=None, crum_path=Non
     alternatives |= {r[0] for r in tdb.execute("SELECT DISTINCT lemma_key FROM morph") if r[0]}
     found = {}
     for key in set(lemma_counts) | alternatives:
+        if oldnorse.is_old_norse(key):        # resolved in the Old Norse dictionary module (build_lexicon_non.py)
+            continue
         for d in dicts_for(key):
             hits, how = resolve(db, d, key)
             for target in hits:

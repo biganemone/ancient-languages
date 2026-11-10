@@ -27,7 +27,7 @@ enum LibraryDatabase {
     static let pendingKey = "libraryPendingWorks"
 
     enum Failure: Error, CustomStringConvertible {
-        case missingBundle, wrongBuild(String, String), notHosted, checksum, noWorks, damaged(String)
+        case missingBundle, wrongBuild(String, String), notHosted, checksum, noWorks, damaged(String), notDictionary
         var description: String {
             switch self {
             case .missingBundle:
@@ -38,6 +38,7 @@ enum LibraryDatabase {
             case .checksum: return "The download was damaged. Please try again."
             case .noWorks: return "There was nothing new to add."
             case .damaged(let why): return "The texts unpacked from the app are damaged (\(why))."
+            case .notDictionary: return "This file isn't a dictionary module."
             }
         }
     }
@@ -192,6 +193,30 @@ enum LibraryDatabase {
         try? db.executeScript("PRAGMA incremental_vacuum")
     }
 
+    /// Checks an inflated dictionary module and moves it into place as
+    /// Library/lexicon-<language>.db (excluded from backup: it can be
+    /// downloaded again). The file is kept as it is, not copied into library.db.
+    static func installDictionary(from module: URL, language: String, build: String?) throws {
+        do {    // closed before the move
+            let db = try SQLiteDatabase(url: module, mode: .readOnly)
+            guard (try? db.string("SELECT count(*) FROM resolve")) != nil,
+                  (try? db.string("SELECT count(*) FROM entry")) != nil else { throw Failure.notDictionary }
+            let moduleBuild = try? db.string("SELECT value FROM meta WHERE key = 'build'")
+            if let build, let moduleBuild, moduleBuild != build {
+                throw Failure.wrongBuild(moduleBuild, build)
+            }
+        }
+        let fm = FileManager.default
+        try fm.createDirectory(at: directory, withIntermediateDirectories: true)
+        let destination = LexiconFiles.url(language: language)
+        try? fm.removeItem(at: destination)
+        try fm.moveItem(at: module, to: destination)
+        var excluded = destination
+        var values = URLResourceValues()
+        values.isExcludedFromBackup = true
+        try? excluded.setResourceValues(values)
+    }
+
     static func sha256(of file: URL) throws -> String {
         let handle = try FileHandle(forReadingFrom: file)
         defer { try? handle.close() }
@@ -212,6 +237,10 @@ final class ModuleManager {
     }
 
     private(set) var status: [String: Status] = [:]      // by URN
+    /// Dictionary modules being downloaded, by language code.
+    private(set) var dictionaryStatus: [String: Status] = [:]
+    /// Downloaded dictionaries made for an earlier build, to download again.
+    private(set) var staleDictionaries: [String] = []
     private(set) var lastError: String?
     let catalog: Catalog
     let library: Library
@@ -219,9 +248,13 @@ final class ModuleManager {
     init(catalog: Catalog, library: Library) {
         self.catalog = catalog
         self.library = library
+        refreshStaleDictionaries()
     }
 
-    var isBusy: Bool { status.values.contains { $0 != .waiting && !Self.isFailure($0) } || !queue.isEmpty }
+    var isBusy: Bool {
+        status.values.contains { $0 != .waiting && !Self.isFailure($0) } || !queue.isEmpty
+            || dictionaryStatus.values.contains { !Self.isFailure($0) }
+    }
     private var queue: [Catalog.Entry] = []
     private var running = false
 
@@ -232,6 +265,10 @@ final class ModuleManager {
         for e in entries where status[e.urn] == nil || Self.isFailure(status[e.urn]!) {
             status[e.urn] = .waiting
             queue.append(e)
+        }
+        // a language whose dictionaries download separately (Old Norse) gets them with its first text
+        for language in Set(entries.map(\.language)) where needsDictionary(language) {
+            installDictionary(language: language)
         }
         guard !running else { return }
         running = true
@@ -312,6 +349,28 @@ final class ModuleManager {
         let build = catalog.build
         let scoped = url.startAccessingSecurityScopedResource()
         defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+        // a dictionary module (dict-<language>.db.z) is kept as a file, not copied into library.db
+        let name = url.lastPathComponent
+        if name.hasPrefix("dict-") {
+            let language = String(name.dropFirst("dict-".count).prefix { $0 != "." })
+            do {
+                try await Task.detached(priority: .userInitiated) {
+                    let tmp = LibraryDatabase.directory.appendingPathComponent("dictionary-\(UUID().uuidString).db")
+                    defer { try? FileManager.default.removeItem(at: tmp) }
+                    if url.pathExtension == "z" {
+                        try LibraryDatabase.inflate(url, to: tmp)
+                    } else {
+                        try FileManager.default.copyItem(at: url, to: tmp)
+                    }
+                    try LibraryDatabase.installDictionary(from: tmp, language: language, build: build)
+                }.value
+                library.reloadDictionaries()
+                refreshStaleDictionaries()
+            } catch {
+                lastError = "\(error)"
+            }
+            return
+        }
         do {
             let added = try await Task.detached(priority: .userInitiated) { () throws -> [String] in
                 let tmp = FileManager.default.temporaryDirectory.appendingPathComponent("file-\(UUID().uuidString).db")
@@ -343,6 +402,7 @@ final class ModuleManager {
     /// progress are kept (they're keyed by URN and citation), for if they come back.
     func remove(urns: [String]) async {
         let bundled = Set(catalog.entries.filter { $0.bundled == true }.map(\.urn))
+        let languages = Set(library.works.filter { urns.contains($0.urn) }.map(\.language))
         do {
             try await Task.detached(priority: .userInitiated) {
                 let db = try SQLiteDatabase(url: LibraryDatabase.url, mode: .readWrite)
@@ -357,12 +417,87 @@ final class ModuleManager {
             UserDefaults.standard.set(Array(removed), forKey: LibraryDatabase.removedKey)
             UserDefaults.standard.set(Array(downloaded), forKey: LibraryDatabase.downloadedKey)
             library.reload()
+            // the last text of a language with a downloaded dictionary: the dictionary goes too
+            let left = Set(library.works.map(\.language))
+            for language in languages.subtracting(left) where LexiconFiles.installedLanguages().contains(language) {
+                removeDictionary(language: language)
+            }
         } catch {
             lastError = "\(error)"
         }
     }
 
     func clearError() { lastError = nil }
+
+    // MARK: Dictionary modules
+
+    /// Whether a language has a dictionary module to download that isn't on disk (or under way).
+    func needsDictionary(_ language: String) -> Bool {
+        guard let d = catalog.dictionary(for: language), catalog.canDownload(d) else { return false }
+        if let s = dictionaryStatus[language], !Self.isFailure(s) { return false }
+        return !FileManager.default.fileExists(atPath: LexiconFiles.url(language: language).path)
+    }
+
+    /// Downloads a language's dictionary module (catalog.json `dictionaries`),
+    /// checks its SHA-256 and build, and keeps it as Library/lexicon-<language>.db.
+    func installDictionary(language: String) {
+        if let s = dictionaryStatus[language], !Self.isFailure(s) { return }
+        guard let d = catalog.dictionary(for: language) else { return }
+        dictionaryStatus[language] = .waiting
+        Task { await downloadDictionary(d) }
+    }
+
+    private func downloadDictionary(_ d: Catalog.Dictionary) async {
+        let language = d.language
+        let build = catalog.build
+        do {
+            guard let base = catalog.downloads, !base.isEmpty,
+                  let url = URL(string: base.hasSuffix("/") ? base + d.module : base + "/" + d.module) else {
+                throw LibraryDatabase.Failure.notHosted
+            }
+            dictionaryStatus[language] = .downloading
+            let (download, _) = try await URLSession.shared.download(from: url)
+            dictionaryStatus[language] = .installing
+            let sha = d.sha256
+            try await Task.detached(priority: .userInitiated) {
+                defer { try? FileManager.default.removeItem(at: download) }
+                if let sha, try LibraryDatabase.sha256(of: download) != sha { throw LibraryDatabase.Failure.checksum }
+                // inflated beside its destination, so the move into place is a rename
+                let tmp = LibraryDatabase.directory.appendingPathComponent("dictionary-\(UUID().uuidString).db")
+                defer { try? FileManager.default.removeItem(at: tmp) }
+                try LibraryDatabase.inflate(download, to: tmp)
+                try LibraryDatabase.installDictionary(from: tmp, language: language, build: build)
+            }.value
+            dictionaryStatus[language] = nil
+            library.reloadDictionaries()
+            refreshStaleDictionaries()
+        } catch {
+            dictionaryStatus[language] = .failed("\(error)")
+            let name = LibraryLanguage(code: language)?.label ?? language
+            lastError = "The \(name) dictionaries couldn't be downloaded: \(error)"
+        }
+    }
+
+    /// Deletes a language's downloaded dictionary file.
+    func removeDictionary(language: String) {
+        let url = LexiconFiles.url(language: language)
+        for suffix in ["", "-journal", "-wal", "-shm"] {
+            try? FileManager.default.removeItem(at: URL(fileURLWithPath: url.path + suffix))
+        }
+        dictionaryStatus[language] = nil
+        library.reloadDictionaries()
+        refreshStaleDictionaries()
+    }
+
+    /// Dictionaries on disk whose build isn't this catalog's (an update brought new
+    /// editions): offered for download again with the texts.
+    private func refreshStaleDictionaries() {
+        guard let build = catalog.build else { staleDictionaries = []; return }
+        staleDictionaries = LexiconFiles.installedLanguages().filter { language in
+            catalog.dictionary(for: language) != nil
+                && LexiconFiles.build(of: LexiconFiles.url(language: language)) != build
+        }
+    }
 
     /// Texts that were downloaded for an earlier build and need downloading again.
     var pending: [Catalog.Entry] {

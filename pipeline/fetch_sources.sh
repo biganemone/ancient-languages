@@ -75,6 +75,21 @@ clone cltk/old_english_text_sacred_texts cltk_oe html README.md
 clone madeleineth/btc_anglo_saxon btc_anglo_saxon db/oe_bosworthtoller.txt.bz2 db/parse_scanned_bt.py \
   db/normalize.py LICENSE.md
 
+# Old Norse: the Poetic Edda in Edward Pettit's edition and translation (Open Book Publishers, 2023;
+# CC BY-NC 4.0), its TEI XML from the Loughborough University repository (figshare 25968073).
+# (The Prose Edda and the sagas are built once from scans, into data/non_texts and
+# data/non_translations.json.gz: see non_texts.py and non_translations.py.)
+if [ ! -d pettit/XML-edition ]; then
+  mkdir -p pettit
+  curl -sfL -o pettit/edda.zip https://ndownloader.figshare.com/files/46812481
+  (cd pettit && unzip -q -o edda.zip && rm edda.zip)
+fi
+
+# Old Norse dictionaries (public domain; digitized by stscoundrel, MIT): Zoëga's Concise Dictionary of
+# Old Icelandic (also the headwords the parses are generated from) and Cleasby–Vigfússon
+clone stscoundrel/old-icelandic-zoega zoega json/zoega.json LICENSE
+clone stscoundrel/cleasby-vigfusson-dictionary cleasby json/cleasby-vigfusson.json LICENSE
+
 # Sanskrit: the Digital Corpus of Sanskrit (Hellwig, CC BY 4.0): the Bhagavad Gītā (MBh 6, "BhaGī")
 # and its lemma dictionary; gita/gita's verse-numbered text (the Unlicense) for verse divisions;
 # Macdonell and Monier-Williams from the Cologne Digital Sanskrit Dictionaries (CC BY-SA 4.0).

@@ -25,6 +25,7 @@ enum SettingsKey {
     static let ntLexicon = "defaultNTLexicon"               // Abbott-Smith unless changed
     static let latinLexicon = "defaultLatinLexicon"         // Lewis & Short unless changed
     static let oldEnglishLexicon = "defaultOldEnglishLexicon" // Klaeber unless changed
+    static let oldNorseLexicon = "defaultOldNorseLexicon"   // Zoëga unless changed
     static let hebrewLexicon = "defaultHebrewLexicon"       // BDB unless changed
     static let sanskritLexicon = "defaultSanskritLexicon"   // Macdonell unless changed
     static let hideCantillation = "hideCantillation"        // Hebrew: show vowel points only
@@ -40,7 +41,7 @@ enum SettingsKey {
 
 /// The Read tab's languages, in the order they're shown.
 enum LibraryLanguage: String, CaseIterable, Identifiable {
-    case greek, latin, hebrew, sanskrit, coptic, oldEnglish
+    case greek, latin, hebrew, sanskrit, coptic, oldEnglish, oldNorse
     var id: String { rawValue }
     var label: String {
         switch self {
@@ -48,6 +49,7 @@ enum LibraryLanguage: String, CaseIterable, Identifiable {
         case .latin: return "Latin"
         case .coptic: return "Coptic"
         case .oldEnglish: return "Old English"
+        case .oldNorse: return "Old Norse"
         case .hebrew: return "Hebrew"
         case .sanskrit: return "Sanskrit"
         }
@@ -59,6 +61,7 @@ enum LibraryLanguage: String, CaseIterable, Identifiable {
         case .latin: return "lat"
         case .coptic: return "cop"
         case .oldEnglish: return "ang"
+        case .oldNorse: return "non"
         case .hebrew: return "hbo"
         case .sanskrit: return "san"
         }

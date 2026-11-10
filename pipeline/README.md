@@ -46,6 +46,11 @@ The only Python dependency is `lxml`; Python 3.10 or later is needed. `works.py`
 | `build_upanishads.py`, `upanishad_editions.py` | Kaṭha, Muṇḍaka, Taittirīya, Aitareya, Chāndogya, Bṛhadāraṇyaka and Śvetāśvatara Upaniṣads from DCS, sectioned by DCS's counters (Kaṭha) or by alignment with numbered texts (Śaṅkara's commentaries' mūla, from the DCS repository's GRETIL folder; Sanskrit Wikisource for Muṇḍaka and Śvetāśvatara, `data/upanishads_sa_wikisource.json.gz`); Müller's English (SBE 1, 15; `data/upanishads_muller.json.gz`, from sacred-texts.com). |
 | `build_apocrypha.py` | The Gospel of Nicodemus: the Acts of Pilate (Greek A) and the Descent into Hell, Tischendorf's text (1876) transcribed for this project from the archive.org scan (`data/acts_of_pilate_tischendorf.txt`: Tesseract `grc`, then read against the page images; apparatus omitted), cited chapter.section; Walker's English (ANF 8, 1886) by chapter (`data/walker_acts_of_pilate.json`, from Wikisource); Morpheus parses ranked by NT usage. The Coptic fragments (Coptic SCRIPTORIUM) are in `build_coptic.py`. |
 | `latin_homer.py` | The Latin Homer (read by `build_latin.py`): the Didot edition's word-for-word Latin (1837–38) of the Iliad, Odyssey and Hymns from Project Gutenberg (#52692, #52693, #52691; `data/didot_latin/`). The Latin is line for line with the Greek and numbered like it, so each Latin work takes the Greek work's blocks (Murray's English) and is linked to it block by block in the parallel map; the Hymns are renumbered from Didot's order to the standard one. Older spellings (inclytus, cœna, promtus) are parsed through their modern forms. |
+| `build_oldnorse.py`, `oldnorse.py` | Adds Old Norse, all downloads: the Poetic Edda (Pettit's text and translation, `pettit.py`), a block per stanza; the Prose Edda, Njáls saga and Egils saga from `data/non_texts/` with their English from `data/non_translations.json.gz`, cited chapter.paragraph, each chapter's English shared out among its blocks in proportion to the text. Keys carry the prefix `non:`. |
+| `non_forms.py` | Old Norse lemmas and parses, automatic: forms generated from Zoëga's headwords and the inflection he gives (noun endings, verbs' principal parts), the article suffixed; pronouns and irregular verbs by hand; names declined from their nominatives in the texts; ranked by lemma frequency (EM). About 90% of words get a reading. |
+| `non_texts.py`, `non_ocr.py`, `non_correct.py` | Run once: the Prose Edda (1907), Njála (1908) and Egils saga (1894) from the archive.org scans (hOCR) into `data/non_texts/*.json.gz`. The text is told from the German notes by its type and layout; the OCR is repaired letter by letter against a second witness (NeuralMIcePaHC's modern-spelling sagas, a second scan of the Edda), only where the two differ by a known misreading. |
+| `non_translations.py` | Run once: Dasent's Njála, Green's Egils saga and Brodeur's Prose Edda by chapter, into `data/non_translations.json.gz`; the translators' saga chapters are matched to the texts' by the names they share. |
+| `build_lexicon_non.py` | The Old Norse dictionaries (Zoëga, Cleasby–Vigfússon) as `lexicon_non.db`, a downloadable dictionary module (`dict-non.db.z`, listed in catalog.json `dictionaries`) instead of part of `lexicon.db`. |
 | `build_lexicon.py` | Builds `lexicon.db`: entries stored as raw DEFLATE (Apple's `COMPRESSION_ZLIB`), short definitions, and a `resolve` table from every lemma to its entries. It also prints a coverage report. |
 | `defaults.py` | The texts the app ships with (by URN, author or language); everything else becomes a download. |
 | `stamp_build.py` | Gives the full build (`texts_app.db`) its build id, in a `meta` table that every export copies. |
@@ -100,6 +105,38 @@ Without them the build leaves out the Nag Hammadi texts and Crum.
 The analyses are automatic and unchecked. The tools are trained on Sahidic, so expect
 more errors in the Lycopolitan texts (NHC I, X, XI).
 
+## Old Norse sources (in progress)
+
+Old Norse is download-only: its texts and its dictionaries (a dictionary module, `dict-non.db.z`) all download. The spelling is normalized Old Norse.
+
+| Text | Old Norse | English | Notes |
+|---|---|---|---|
+| Poetic Edda | Edward Pettit, *The Poetic Edda: A Dual-Language Edition* (Open Book Publishers, 2023, DOI 10.11647/OBP.0308), TEI XML from Loughborough (figshare article 25968073, file 46812481) | Pettit's translation, from the same XML | 36 poems. Stanzas are numbered and cross-linked by anchors in both languages. |
+| Prose Edda | Finnur Jónsson, *Edda Snorra Sturlusonar* (Reykjavík: Sigurður Kristjánsson, 1907), archive.org `eddasnorrasturlu00edda`, checked against the Google scan `eddasnorrasturl00sturgoog` | Brodeur (1916), archive.org `proseedda00snor` | Normalized with ö and œ. His 1931 Copenhagen edition is in manuscript spelling, so it is not used. Brodeur has no Háttatal, so Háttatal goes in without a translation. |
+| Njáls saga | Finnur Jónsson, *Brennu-Njálssaga* (Altnordische Saga-Bibliothek 13, 1908), archive.org `brennunjlssaganj00finn` | Dasent (1861), Project Gutenberg #17919 | |
+| Egils saga | Finnur Jónsson, *Egils saga Skallagrímssonar* (ASB 3, 1894), archive.org `egilssagaskallag00finnuoft` | Green (1893), archive.org `thestoryofegilskallagrigreen` | This is the 1st edition: the scan of the 1924 2nd edition reads no þ or ð. |
+
+`non_texts.py` builds these texts once from the scans and commits them as `data/non_texts/*.json.gz`. It needs `non_ocr.py` (layout) and `non_correct.py` (correction).
+
+The Finnur Jónsson texts are the archive.org OCR, and the OCR needs cleaning:
+- ǫ is usually read as `o`.
+- Some words are misread (`ruaðr` for `maðr`).
+- German footnotes and page furniture are interleaved with the text.
+
+The cleanup strips the notes, then restores ǫ and fixes misreads using two references: the dictionary forms, and NeuralMIcePaHC's modern-spelling copy of each saga as a second witness. Finally, a sample is checked by hand.
+
+These were considered and not used:
+- **Guðni Jónsson's editions (heimskringla.no):** no licence is stated, and the editor died in 1974.
+- **Bellows's Edda translation:** its stanza numbering differs from Pettit's.
+
+Parsing aids (build time only):
+- NeuralMIcePaHC 20.04/20.05 (CLARIN-IS, `20.500.12537/18`): CC BY 4.0. Phrase-structure parses of 43 sagas, Njáls and Egils included. Modern spelling, no lemmas.
+- Saga Corpus (CLARIN-IS, `20.500.12537/32`): Stagger tags and Nefnir lemmas, modern spelling. Its licence is not yet checked.
+
+Dictionaries:
+- Zoëga, *A Concise Dictionary of Old Icelandic* (1910): public domain. JSON from `stscoundrel/old-icelandic-zoega`, MIT.
+- Cleasby–Vigfússon (1874): public domain. JSON from `stscoundrel/cleasby-vigfusson-dictionary`; its repository licence is not yet checked.
+
 ## Licences
 
 - Perseus texts and treebank: CC BY-SA 3.0.
@@ -125,3 +162,4 @@ more errors in the Lycopolitan texts (NHC I, X, XI).
 - Cologne Digital Sanskrit Dictionaries (Macdonell, Monier-Williams): CC BY-SA 4.0.
 - Besant's Gītā (1922, Wikisource), Müller's Upaniṣads (SBE 1, 15; sacred-texts.com), Long's Marcus Aurelius (1862, Project Gutenberg): public domain.
 - Beowulf (Klaeber's text and glossary, Garnett's translation; Perseus): CC BY-SA. ASPR e-text (Greg Hidley, Oxford Text Archive, via CLTK): CC BY-SA. Tichý's Old English forms: CC BY 4.0. Bosworth–Toller (Germanic Lexicon Project): public domain; btc_anglo_saxon: MIT. Old English translations from Project Gutenberg: public domain.
+- Pettit, *The Poetic Edda: A Dual-Language Edition* (2023), text and translation: CC BY-NC 4.0. Non-commercial, fine for this app; credit Edward Pettit and Open Book Publishers. Finnur Jónsson's editions (1908, 1924, 1931), Brodeur's, Dasent's and Green's translations, Zoëga and Cleasby–Vigfússon: public domain. NeuralMIcePaHC: CC BY 4.0, build time only.

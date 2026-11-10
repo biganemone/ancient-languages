@@ -2,6 +2,7 @@
 pipeline/sources/
 pipeline/build/
 pipeline/out/
+pipeline/.venv/
 __pycache__/
 app/AncientLanguages/Resources/Databases/
 

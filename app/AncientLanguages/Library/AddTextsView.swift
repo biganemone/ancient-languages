@@ -1,11 +1,12 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-/// "Add Texts": every catalogued text not in the library, by language and
-/// author, optionally narrowed to one language or one author's group. Texts
-/// that ship with the app are added at once; the others are downloaded
-/// (once downloads are hosted). "Add from File…" takes a module file
-/// (pipeline/make_modules.py) from Files.
+/// "Add Texts": every catalogued text not in the library, grouped by language
+/// and author. A search field narrows the list by title, author or translator,
+/// and a row of language capsules by language (opened from a language or an
+/// author's group, it starts narrowed to that). Texts that ship with the app
+/// are added at once; the others are downloaded. "Add from File…" takes a
+/// module file (pipeline/make_modules.py) from Files.
 struct AddTextsView: View {
     let catalog: Catalog
     let library: Library
@@ -16,8 +17,33 @@ struct AddTextsView: View {
     @Environment(ModuleManager.self) private var modules
     @State private var unavailable: Catalog.Entry?
     @State private var importing = false
+    @State private var query = ""
+    /// The language shown; nil = all. Starts as the language the sheet was opened for.
+    @State private var filter: LibraryLanguage?
+    @State private var started = false
 
-    private var missing: [Catalog.Entry] { catalog.missing(from: library.works, language: language, author: author) }
+    /// Everything not yet in the library (for the author's group, if opened from one).
+    private var missing: [Catalog.Entry] { catalog.missing(from: library.works, author: author) }
+
+    /// Languages with something to add, in the usual order.
+    private var languages: [LibraryLanguage] {
+        let have = Set(missing.compactMap { LibraryLanguage(code: $0.language) })
+        return LibraryLanguage.allCases.filter { have.contains($0) }
+    }
+
+    private var searching: Bool { !query.trimmingCharacters(in: .whitespaces).isEmpty }
+
+    /// `missing`, narrowed by the language filter and the search.
+    private var shown: [Catalog.Entry] {
+        let q = query.trimmingCharacters(in: .whitespaces)
+        return missing.filter { e in
+            (filter == nil || LibraryLanguage(code: e.language) == filter)
+                && (q.isEmpty || [e.title, e.author, e.translator, e.scope,
+                                  LibraryLanguage(code: e.language)?.label ?? ""].contains { field in
+                    field.range(of: q, options: [.caseInsensitive, .diacriticInsensitive]) != nil
+                })
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -27,11 +53,28 @@ struct AddTextsView: View {
                         Label("You have them all", systemImage: "checkmark.circle")
                     } description: {
                         Text(author.map { "Every text by or in \($0) is already in your library." }
-                             ?? language.map { "Every \($0.label) text is already in your library." }
                              ?? "Every available text is already in your library.")
                     }
                     .listRowBackground(Color.clear)
                 } else {
+                    if author == nil && languages.count > 1 {
+                        languageFilter
+                            .listRowBackground(Color.clear)
+                            .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                    }
+                    if shown.isEmpty {
+                        if searching {
+                            ContentUnavailableView.search(text: query)
+                                .listRowBackground(Color.clear)
+                        } else {
+                            ContentUnavailableView {
+                                Label("You have them all", systemImage: "checkmark.circle")
+                            } description: {
+                                Text("Every \(filter?.label ?? "") text is already in your library.")
+                            }
+                            .listRowBackground(Color.clear)
+                        }
+                    }
                     ForEach(groups, id: \.key) { group in
                         Section {
                             ForEach(group.entries) { entry in
@@ -54,8 +97,16 @@ struct AddTextsView: View {
                     }
                 }
             }
-            .navigationTitle(author ?? language.map { "Add \($0.label) Texts" } ?? "Add Texts")
+            .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always),
+                        prompt: "Search titles, authors, translators")
+            .navigationTitle(author ?? "Add Texts")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                if !started {
+                    filter = language
+                    started = true
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
                 ToolbarItem(placement: .topBarLeading) {
@@ -84,6 +135,36 @@ struct AddTextsView: View {
                 Text(modules.lastError ?? "")
             }
         }
+    }
+
+    /// "All", then a capsule per language with texts to add (as on the Read tab), with counts.
+    private var languageFilter: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                capsule("All", count: missing.count, selected: filter == nil) { filter = nil }
+                ForEach(languages) { lang in
+                    capsule(lang.label,
+                            count: missing.filter { LibraryLanguage(code: $0.language) == lang }.count,
+                            selected: filter == lang) { filter = lang }
+                }
+            }
+            .padding(.horizontal, 16)
+        }
+    }
+
+    private func capsule(_ label: String, count: Int, selected: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 4) {
+                Text(label)
+                Text("\(count)").monospacedDigit().foregroundStyle(selected ? Color.white.opacity(0.8) : Color.secondary)
+            }
+            .font(.subheadline.weight(selected ? .semibold : .regular))
+            .padding(.horizontal, 14).padding(.vertical, 7)
+            .background(Capsule().fill(selected ? Color.accentColor : Color(.secondarySystemFill)))
+            .foregroundStyle(selected ? Color.white : Color.primary)
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(selected ? .isSelected : [])
     }
 
     private func failed(_ e: Catalog.Entry) -> Bool {
@@ -146,9 +227,9 @@ struct AddTextsView: View {
     private var groups: [(key: String, entries: [Catalog.Entry])] {
         var order: [String] = []
         var by: [String: [Catalog.Entry]] = [:]
-        for e in missing {
+        for e in shown {
             let lang = LibraryLanguage(code: e.language)?.label ?? e.language
-            let key = language == nil ? "\(lang) · \(e.author)" : e.author
+            let key = filter == nil && author == nil ? "\(lang) · \(e.author)" : e.author
             if by[key] == nil { order.append(key) }
             by[key, default: []].append(e)
         }

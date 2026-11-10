@@ -3,6 +3,7 @@ import Foundation
 /// The dictionaries the app knows about.
 enum Lexicon: String, CaseIterable, Identifiable {
     case lsj, ml, aut, abs, ls, lewis, ccl, crum, klaeber, bt, bdb, strong, md, mw
+    case zoega, cleasby = "cv"      // Old Norse: downloaded (lexicon-non.db), not bundled
     var id: String { rawValue }
     var shortName: String {
         switch self {
@@ -20,11 +21,35 @@ enum Lexicon: String, CaseIterable, Identifiable {
         case .strong: return "Strong's"
         case .md: return "Macdonell"
         case .mw: return "Monier-Williams"
+        case .zoega: return "Zoëga"
+        case .cleasby: return "Cleasby–Vigfússon"
         }
     }
 
-    /// The dictionaries offered for a work's language, default first.
+    /// For a dictionary that comes as a download rather than in lexicon.db:
+    /// the language code of its file (Library/lexicon-<code>.db).
+    var downloadLanguage: String? {
+        switch self {
+        case .zoega, .cleasby: return "non"
+        default: return nil
+        }
+    }
+
+    /// Bundled, or downloaded and still on disk.
+    var isInstalled: Bool {
+        guard let code = downloadLanguage else { return true }
+        return FileManager.default.fileExists(atPath: LexiconFiles.url(language: code).path)
+    }
+
+    /// The dictionaries offered for a work's language, default first: only
+    /// those installed (Old Norse's may not have been downloaded yet).
     static func available(for work: Work) -> [Lexicon] {
+        offered(for: work).filter(\.isInstalled)
+    }
+
+    /// Every dictionary for a work's language, installed or not.
+    static func offered(for work: Work) -> [Lexicon] {
+        if work.isOldNorse { return [.zoega, .cleasby] }
         if work.isCoptic { return [.ccl, .crum] }
         if work.isLatin { return [.ls, .lewis] }
         if work.isOldEnglish { return [.klaeber, .bt] }
@@ -50,7 +75,31 @@ struct Lookup {
     var entries: [Lexicon: [LexiconEntry]] = [:]
 }
 
-/// Reads lexicon.db. Lemma → entry resolution is precomputed by the pipeline
+/// Downloaded dictionary files, kept beside library.db (Application
+/// Support/Library/lexicon-<language>.db) with the same tables as lexicon.db.
+enum LexiconFiles {
+    static func url(language: String) -> URL {
+        LibraryDatabase.directory.appendingPathComponent("lexicon-\(language).db")
+    }
+
+    /// Languages whose dictionary file is on disk.
+    static func installedLanguages() -> [String] {
+        let names = (try? FileManager.default.contentsOfDirectory(atPath: LibraryDatabase.directory.path)) ?? []
+        return names.compactMap { name in
+            guard name.hasPrefix("lexicon-"), name.hasSuffix(".db") else { return nil }
+            let code = name.dropFirst("lexicon-".count).dropLast(".db".count)
+            return code.isEmpty ? nil : String(code)
+        }.sorted()
+    }
+
+    /// meta.build of a dictionary file (nil if it has none or won't open).
+    static func build(of url: URL) -> String? {
+        guard let db = try? SQLiteDatabase(url: url) else { return nil }
+        return try? db.string("SELECT value FROM meta WHERE key = 'build'")
+    }
+}
+
+/// Reads lexicon.db (or a downloaded lexicon-<language>.db). Lemma → entry resolution is precomputed by the pipeline
 /// (table `resolve`), so a tap is a couple of indexed queries.
 final class LexiconStore {
     private let db: SQLiteDatabase

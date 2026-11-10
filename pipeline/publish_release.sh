@@ -37,6 +37,12 @@ for w in c["works"]:
         problems.append(f"no module for {w['urn']}")
     elif hashlib.sha256(open(path, "rb").read()).hexdigest() != w["sha256"]:
         problems.append(f"checksum differs for {w['module']}")
+for d in c.get("dictionaries", []):
+    path = os.path.join(modules, d["module"])
+    if not os.path.exists(path):
+        problems.append(f"no dictionary module {d['module']}")
+    elif hashlib.sha256(open(path, "rb").read()).hexdigest() != d["sha256"]:
+        problems.append(f"checksum differs for {d['module']}")
 for p in problems[:20]:
     print("  ", p)
 if problems:

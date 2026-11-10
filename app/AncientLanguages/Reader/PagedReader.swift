@@ -27,7 +27,7 @@ struct ReaderPage: Identifiable {
 enum Paginator {
     static func paginate(_ items: [ReaderItem], metrics: ReaderMetrics, size: CGSize) -> [ReaderPage] {
         guard size.width > 50, size.height > 50 else { return [] }
-        let height = size.height - 4   // slack for SwiftUI rounding row heights
+        let height = size.height - 6   // slack for SwiftUI rounding row heights
         var pages: [[ReaderItem]] = []
         var current: [ReaderItem] = []
         var used: CGFloat = 0
@@ -311,6 +311,29 @@ struct PagedReaderView: View {
     /// area, which sets the page margins, is only final once the rotation
     /// has finished, so the page frame is measured again then.
     @State private var settledPass = 0
+    /// Bumped when a new list of items (another book, chapter, layout) has been
+    /// paginated: the paged TabView is then made afresh, already on the right
+    /// page. Changing its pages and its selection at once leaves a page-style
+    /// TabView showing the old position (the "Next book" spinner) until the
+    /// reader swipes away and back.
+    @State private var tabGeneration = 0
+    @State private var paginatedVersion = -1
+
+    // Measured, not assumed (the page margins were off by a line or two, differently
+    // from text to text and with the bars shown or hidden):
+    /// Where the navigation bar ends (the top of the safe area, with the bars shown).
+    @State private var barsTop: CGFloat = 0
+    /// How far the text actually lands from where the page frame puts it: the pages
+    /// are moved by the difference.
+    @State private var topShift: CGFloat = 0
+    /// How much taller than the page the text came out (it ran under the footer):
+    /// pages are made this much shorter and paginated again.
+    @State private var shrink: CGFloat = 0
+    @State private var shrinkScope = ""
+    /// Shrinking is tried at most a few times per page size, and one at a time, so
+    /// that measuring can never keep the reader repaginating.
+    @State private var shrinkSteps = 0
+    @State private var shrinkPending = false
 
     private struct Key: Hashable {
         let version: Int
@@ -320,35 +343,61 @@ struct PagedReaderView: View {
         let pass: Int
         let full: Bool
         let corner: Bool
+        let barsTop: CGFloat
+        let shrink: CGFloat
     }
 
     var body: some View {
+        ZStack {
+            // The safe area as laid out (below the navigation bar when it shows).
+            GeometryReader { probe in
+                Color.clear
+                    .onAppear { noteBarsTop(probe.frame(in: .global).minY) }
+                    .onChange(of: probe.frame(in: .global).minY) { _, y in noteBarsTop(y) }
+            }
+            pager
+        }
+    }
+
+    private var pager: some View {
         GeometryReader { geo in
-            let frame = PageFrame(size: geo.size, metrics: metrics, full: fullPage, cornerButton: cornerButton)
+            let frame = PageFrame(size: geo.size, metrics: metrics, full: fullPage, cornerButton: cornerButton,
+                                  barsTop: barsTop)
             ZStack(alignment: .bottom) {
                 Color(Palette.paper)
                     .contentShape(Rectangle())
                     .onTapGesture(perform: onTapBackground)
                 TabView(selection: $index) {
+                    // Each page ignores the safe area itself: a page-style TabView gives its
+                    // pages the safe area again even when the TabView ignores it, which
+                    // pushed the text down by the status-bar height (empty lines at the
+                    // top, the last lines under the footer) on full pages.
                     if onPreviousPart != nil {
-                        partTurn(previous: true).tag(-1)
+                        partTurn(previous: true).ignoresSafeArea().tag(-1)
                     }
                     ForEach(pages) { page in
-                        pageView(page, frame: frame).tag(page.id)
+                        pageView(page, frame: frame).ignoresSafeArea().tag(page.id)
                     }
                     if onNextPart != nil {
-                        partTurn(previous: false).tag(pages.count)
+                        partTurn(previous: false).ignoresSafeArea().tag(pages.count)
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
+                .id(tabGeneration)
                 .ignoresSafeArea()
                 footer
-                    .padding(.bottom, frame.insets.bottom + 6)
+                    .padding(.bottom, frame.footerBottom)
                     .opacity(chromeHidden ? 0 : 1)
                     .allowsHitTesting(false)
             }
             .task(id: Key(version: itemsVersion, metrics: metrics, width: geo.size.width, height: geo.size.height,
-                          pass: settledPass, full: fullPage, corner: cornerButton)) {
+                          pass: settledPass, full: fullPage, corner: cornerButton, barsTop: barsTop, shrink: shrink)) {
+                let scope = "\(metrics.hashValue)|\(geo.size.width)|\(geo.size.height)|\(fullPage)|\(barsTop)"
+                if scope != shrinkScope {          // a new page size or type: measure afresh
+                    shrinkScope = scope
+                    shrinkSteps = 0
+                    if shrink != 0 { shrink = 0; return }
+                }
                 repaginate(frame: frame)
             }
             .onChange(of: geo.size) { _, _ in
@@ -378,10 +427,19 @@ struct PagedReaderView: View {
 
     private func pageView(_ page: ReaderPage, frame: PageFrame) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            ForEach(page.items) { item in
-                ReaderItemView(item: item, metrics: metrics, selection: selection,
-                               onTapToken: onTapToken, onTapBackground: onTapBackground)
+            VStack(alignment: .leading, spacing: 0) {
+                ForEach(page.items) { item in
+                    ReaderItemView(item: item, metrics: metrics, selection: selection,
+                                   onTapToken: onTapToken, onTapBackground: onTapBackground)
+                }
             }
+            .fixedSize(horizontal: false, vertical: true)   // its natural height, even when too tall
+            // how tall the text really came out
+            .background(GeometryReader { g in
+                Color.clear
+                    .onAppear { measuredHeight(page, frame: frame, height: g.size.height) }
+                    .onChange(of: g.size.height) { _, h in measuredHeight(page, frame: frame, height: h) }
+            })
             Color.clear
                 .frame(maxHeight: .infinity)
                 .contentShape(Rectangle())
@@ -390,7 +448,15 @@ struct PagedReaderView: View {
         .frame(width: frame.contentSize.width, height: frame.contentSize.height, alignment: .top)
         .padding(.top, frame.top)
         .padding(.leading, frame.leading)
+        .offset(y: topShift)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        // Where the page itself sits (it should be at the top of the screen). Measured
+        // outside the offset, so moving the text doesn't change the measurement.
+        .background(GeometryReader { g in
+            Color.clear
+                .onAppear { measuredPageTop(page, g.frame(in: .global).minY) }
+                .onChange(of: g.frame(in: .global).minY) { _, y in measuredPageTop(page, y) }
+        })
         // Taps in the margins (behind the text views) toggle the chrome.
         .background(Color.clear.contentShape(Rectangle()).onTapGesture(perform: onTapBackground))
     }
@@ -416,9 +482,43 @@ struct PagedReaderView: View {
         .foregroundStyle(Color(Palette.muted))
     }
 
+    /// The navigation bar's bottom, read while the bars show (not while they are
+    /// hidden for reading, nor in no-bars mode, where it isn't used).
+    private func noteBarsTop(_ y: CGFloat) {
+        guard !chromeHidden, !fullPage, y > 0, abs(y - barsTop) > 0.5 else { return }
+        Task {
+            try? await Task.sleep(for: .milliseconds(350))     // let the bars finish moving
+            if !chromeHidden, !fullPage, abs(y - barsTop) > 0.5 { barsTop = y }
+        }
+    }
+
+    /// A page placed below the top of the screen (the page-style TabView sometimes
+    /// keeps the safe area for its pages): the text is moved up by as much.
+    private func measuredPageTop(_ page: ReaderPage, _ y: CGFloat) {
+        guard page.id == index, y.isFinite, abs(y) < 120 else { return }
+        if abs(-y - topShift) > 1 { topShift = -y }
+    }
+
+    /// Text that came out taller than the page (it ran under the footer): the pages
+    /// are laid out again a little shorter, at most three times per page size.
+    private func measuredHeight(_ page: ReaderPage, frame: PageFrame, height: CGFloat) {
+        let limit = frame.contentSize.height / 4
+        let over = height - frame.contentSize.height
+        guard page.id == index, page.items.count > 1, over > 0.5, !shrinkPending,
+              shrinkSteps < 3, shrink < limit else { return }
+        shrinkPending = true
+        Task {
+            try? await Task.sleep(for: .milliseconds(250))    // let the page settle first
+            shrinkSteps += 1
+            shrink = min(shrink + over + 2, limit)
+            shrinkPending = false
+        }
+    }
+
     private func repaginate(frame: PageFrame) {
         let keep = anchor
-        pages = Paginator.paginate(items, metrics: metrics, size: frame.contentSize)
+        let size = CGSize(width: frame.contentSize.width, height: frame.contentSize.height - shrink)
+        pages = Paginator.paginate(items, metrics: metrics, size: size)
         if let keep, let found = pages.firstIndex(where: { $0.contains(keep) })
             ?? pages.firstIndex(where: { $0.items.contains { $0.baseID == keep.baseID } }) {
             // (the second: a row cut differently at a new size)
@@ -427,6 +527,28 @@ struct PagedReaderView: View {
             index = 0
         }
         if pages.indices.contains(index) { anchor = pages[index].anchor }
+        if itemsVersion != paginatedVersion {
+            paginatedVersion = itemsVersion
+            tabGeneration += 1
+        }
+    }
+}
+
+extension PageFrame {
+    /// A home-indicator strip at the bottom of the screen (Face ID iPhones), not a Home button.
+    static func hasHomeStrip(_ insets: UIEdgeInsets) -> Bool { insets.bottom >= 20 }
+
+    /// The key window's safe area (what the page margins are measured from).
+    static var windowInsets: UIEdgeInsets {
+        UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap(\.windows)
+            .first(where: \.isKeyWindow)?.safeAreaInsets ?? .zero
+    }
+
+    /// How far above the bottom edge of the screen the footer line sits.
+    var footerBottom: CGFloat {
+        Self.hasHomeStrip(insets) ? insets.bottom - 20 : insets.bottom + 6
     }
 }
 
@@ -438,7 +560,7 @@ struct PageFrame {
     let leading: CGFloat
     let contentSize: CGSize
 
-    init(size: CGSize, metrics: ReaderMetrics, full: Bool = false, cornerButton: Bool = true) {
+    init(size: CGSize, metrics: ReaderMetrics, full: Bool = false, cornerButton: Bool = true, barsTop: CGFloat = 0) {
         let window = UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }
             .flatMap(\.windows)
@@ -449,9 +571,18 @@ struct PageFrame {
         // With the bars showing: room for the navigation bar above and the
         // footer line (and the hide-bars button) below. With no bars, only a
         // small margin, plus the button's corner if it is shown.
+        // On Face ID iPhones the footer (and the hide-bars button) sit low, in
+        // the home-indicator strip where the screen curves, so the text can
+        // run nearly to the bottom of the safe area.
         let navigationBar: CGFloat = full ? 0 : 44
-        let footer: CGFloat = full ? (cornerButton ? 34 : 12) : 36
-        top = insets.top + navigationBar + (full ? 12 : 6)
+        let footer: CGFloat
+        if Self.hasHomeStrip(insets) {
+            footer = 8
+        } else {
+            footer = full ? (cornerButton ? 34 : 12) : 36
+        }
+        // the navigation bar's real bottom when it has been measured
+        top = !full && barsTop > insets.top ? barsTop + 4 : insets.top + navigationBar + (full ? 6 : 2)
         leading = insets.left + metrics.leadingPadding
         let width = size.width - insets.left - insets.right - metrics.leadingPadding - metrics.trailingPadding
         let height = size.height - top - insets.bottom - footer

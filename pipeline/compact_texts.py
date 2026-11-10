@@ -41,7 +41,7 @@ import greek
 import sqlite3
 import sys
 
-SOURCES = {None: 0, "morpheus": 1, "treebank": 2, "scriptorium": 3, "coptic-nlp": 4, "oe-forms": 5, "oshb": 6, "dcs": 7}
+SOURCES = {None: 0, "morpheus": 1, "treebank": 2, "scriptorium": 3, "coptic-nlp": 4, "oe-forms": 5, "oshb": 6, "dcs": 7, "non-forms": 8}
 
 SCHEMA = """
 CREATE TABLE work (
@@ -60,7 +60,8 @@ CREATE TABLE part (work_id INT, seq INT, key TEXT, token_first INT, token_last I
 CREATE TABLE tag (id INTEGER PRIMARY KEY, tag TEXT);
 CREATE TABLE parse (id INTEGER PRIMARY KEY, parse TEXT);
 -- start/len: UTF-16 units into segment.text; source: 0 none, 1 Morpheus,
--- 2 treebank, 3 Coptic SCRIPTORIUM, 4 Coptic NLP (automatic), 5 Old English form tables (oe_forms.py), 6 Open Scriptures Hebrew Bible
+-- 2 treebank, 3 Coptic SCRIPTORIUM, 4 Coptic NLP (automatic), 5 Old English form tables (oe_forms.py), 6 Open Scriptures Hebrew Bible,
+-- 8 Old Norse form tables (non_forms.py)
 CREATE TABLE token (
   id INTEGER PRIMARY KEY, segment_id INT, idx INT, start INT, len INT,
   lemma_id INT, tag_id INT, source INT, word_id INT, form TEXT, aor_id INT);
@@ -197,13 +198,15 @@ def glosses(lexicon_db, coptic_pos):
     return out
 
 
-def main(src, out, lexicon_db=None):
+def main(src, out, lexicon_db=None, lexicon_extra=None):
     s = sqlite3.connect(src)
     d = sqlite3.connect(out)
     d.executescript(SCHEMA)
     lemma = Interner(d, "lemma", ["lemma", "key"])
     function, aorist_tokens, aorist_heads, coptic_pos = word_facts(s)
     gloss = glosses(lexicon_db, coptic_pos)
+    if lexicon_extra:                       # the downloadable dictionaries (Old Norse's lexicon_non.db)
+        gloss.update(glosses(lexicon_extra, coptic_pos))
     aorist_ids = {}
     tag = Interner(d, "tag", ["tag"])
     parse = Interner(d, "parse", ["parse"])
@@ -300,4 +303,4 @@ def main(src, out, lexicon_db=None):
 
 
 if __name__ == "__main__":
-    main(*sys.argv[1:4])
+    main(*sys.argv[1:5])

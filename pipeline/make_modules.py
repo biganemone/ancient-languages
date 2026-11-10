@@ -27,6 +27,8 @@ def main():
     ap.add_argument("db")
     ap.add_argument("dir")
     ap.add_argument("--max-seconds", type=float, default=0)
+    ap.add_argument("--dictionary", action="append", default=[], metavar="LANG=PATH",
+                    help="a downloadable dictionary (lexicon file of the same build), e.g. non=build/lexicon_non.db")
     a = ap.parse_args()
     start = time.time()
     os.makedirs(a.dir, exist_ok=True)
@@ -56,6 +58,24 @@ def main():
         manifest["modules"][urn] = {"file": name + ".db.z", "bytes": os.path.getsize(z), "sha256": digest}
         made += 1
         json.dump(manifest, open(manifest_path, "w"), indent=0)
+    # dictionary modules: the lexicon file itself, deflated (dict-<lang>.db.z)
+    for spec in a.dictionary:
+        lang, path = spec.split("=", 1)
+        lx = sqlite3.connect(path)
+        lbuild = lx.execute("SELECT value FROM meta WHERE key = 'build'").fetchone()[0]
+        if lbuild != build:
+            raise SystemExit(f"{path} is build {lbuild}, the texts {build}: stamp them together (stamp_build.py)")
+        titles = lx.execute("SELECT id, title FROM dictionary ORDER BY rowid").fetchall()
+        lx.close()
+        name = f"dict-{lang}.db.z"
+        z = os.path.join(a.dir, name)
+        deflate(path, z)
+        digest = hashlib.sha256(open(z, "rb").read()).hexdigest()
+        manifest.setdefault("dictionaries", {})[lang] = {
+            "file": name, "bytes": os.path.getsize(z), "sha256": digest,
+            "dictionaries": [{"id": i, "title": t} for i, t in titles]}
+        json.dump(manifest, open(manifest_path, "w"), indent=0)
+        print(f"{z}: {os.path.getsize(z) / 1e6:.1f} MB, {len(titles)} dictionaries")
     done = sum(1 for _, u in works if u in manifest["modules"])
     print(f"{a.dir}: made {made}, {done}/{len(works)} done for build {build}")
 

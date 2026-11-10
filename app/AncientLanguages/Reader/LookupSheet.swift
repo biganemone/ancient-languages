@@ -23,6 +23,7 @@ struct LookupSheet: View {
     @AppStorage(SettingsKey.oldEnglishLexicon) private var preferredOldEnglish = Lexicon.klaeber
     @AppStorage(SettingsKey.hebrewLexicon) private var preferredHebrew = Lexicon.bdb
     @AppStorage(SettingsKey.sanskritLexicon) private var preferredSanskrit = Lexicon.md
+    @AppStorage(SettingsKey.oldNorseLexicon) private var preferredNorse = Lexicon.zoega
     @AppStorage(SettingsKey.devanagari) private var devanagari = false
     @State private var lookup = Lookup()
     @State private var current = Lexicon.lsj
@@ -32,6 +33,7 @@ struct LookupSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(AnnotationStore.self) private var store
     @Environment(StudyStore.self) private var study
+    @Environment(ModuleManager.self) private var modules
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -56,12 +58,17 @@ struct LookupSheet: View {
                     HStack { Spacer(); flashcardButton }
                         .font(.callout).buttonStyle(.borderless)
                 }
-                Picker("Lexicon", selection: $current) {
-                    ForEach(Lexicon.available(for: work)) { Text($0.shortName).tag($0) }
+                if Lexicon.available(for: work).isEmpty {
+                    dictionaryPrompt
+                    Spacer()
+                } else {
+                    Picker("Lexicon", selection: $current) {
+                        ForEach(Lexicon.available(for: work)) { Text($0.shortName).tag($0) }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.top, 4)
+                    EntryWebView(html: entryHTML)
                 }
-                .pickerStyle(.segmented)
-                .padding(.top, 4)
-                EntryWebView(html: entryHTML)
             } else {
                 Spacer()
             }
@@ -71,16 +78,18 @@ struct LookupSheet: View {
         .overlay(alignment: .top) { grabber }
         .background(Color(Palette.paper).ignoresSafeArea())
         .task(id: selection) { reload() }
-        .onAppear {
-            let preferred = work.isCoptic ? preferredCoptic : work.isLatin ? preferredLatin
-                : work.isOldEnglish ? preferredOldEnglish : work.isHebrew ? preferredHebrew
-                : work.isSanskrit ? preferredSanskrit
-                : work.isHomeric ? preferredHomeric : work.isBible ? preferredNT : preferredGreek
-            current = Lexicon.available(for: work).contains(preferred) ? preferred : Lexicon.available(for: work)[0]
+        .onAppear { chooseLexicon() }
+        .onChange(of: library.hasDictionary(language: work.language)) { _, _ in
+            // the dictionaries just finished downloading (or were removed)
+            chooseLexicon()
+            lookupLemma()
         }
         .onChange(of: current) { _, newValue in
+            // only a dictionary that's there to pick, so a missing download doesn't reset the choice
+            guard Lexicon.available(for: work).contains(newValue) else { return }
             // Homer keeps its own choice, so Autenrieth there doesn't change Plato's default
             if work.isCoptic { preferredCoptic = newValue }
+            else if work.isOldNorse { preferredNorse = newValue }
             else if work.isLatin { preferredLatin = newValue }
             else if work.isOldEnglish { preferredOldEnglish = newValue }
             else if work.isHebrew { preferredHebrew = newValue }
@@ -90,6 +99,53 @@ struct LookupSheet: View {
             else { preferredGreek = newValue }
         }
         .onChange(of: chosen) { _, _ in lookupLemma() }
+    }
+
+    /// The reader's dictionary for this work's language, if it's installed; else the first one that is.
+    private func chooseLexicon() {
+        let preferred = work.isCoptic ? preferredCoptic : work.isLatin ? preferredLatin
+            : work.isOldEnglish ? preferredOldEnglish : work.isOldNorse ? preferredNorse
+            : work.isHebrew ? preferredHebrew : work.isSanskrit ? preferredSanskrit
+            : work.isHomeric ? preferredHomeric : work.isBible ? preferredNT : preferredGreek
+        let available = Lexicon.available(for: work)
+        current = available.contains(preferred) ? preferred : (available.first ?? preferred)
+    }
+
+    /// In place of the dictionaries when they download separately (Old Norse)
+    /// and aren't on the device: the first download failed, or was interrupted.
+    @ViewBuilder private var dictionaryPrompt: some View {
+        let status = modules.dictionaryStatus[work.language]
+        let module = modules.catalog.dictionary(for: work.language)
+        VStack(alignment: .leading, spacing: 8) {
+            Text("The \(LibraryLanguage(code: work.language)?.label ?? "") dictionaries (\(Lexicon.offered(for: work).map(\.shortName).joined(separator: ", "))) aren't on this device yet.")
+                .font(.callout).foregroundStyle(.secondary)
+            switch status {
+            case .waiting?, .downloading?, .installing?:
+                HStack(spacing: 8) {
+                    ProgressView()
+                    Text(status == .installing ? "Installing…" : "Downloading…")
+                        .font(.callout).foregroundStyle(.secondary)
+                }
+            default:
+                if let module, modules.catalog.canDownload(module) {
+                    Button {
+                        modules.installDictionary(language: work.language)
+                    } label: {
+                        Label(module.bytes.map {
+                            "Download dictionary (\(ByteCountFormatter.string(fromByteCount: Int64($0), countStyle: .file)))"
+                        } ?? "Download dictionary", systemImage: "arrow.down.circle")
+                    }
+                    .buttonStyle(.bordered)
+                } else {
+                    Text("Downloading isn't available in this version.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+                if case .failed(let why)? = status {
+                    Text(why).font(.caption).foregroundStyle(.orange)
+                }
+            }
+        }
+        .padding(.top, 8)
     }
 
     /// Our own grabber (the system one is hidden): tap it to close the card;
@@ -126,7 +182,7 @@ struct LookupSheet: View {
                     UIPasteboard.general.string =
                         "\(selection.token.form) (\(PerseusLinks.citation(work: work, cite: selection.cite)))"
                 }
-                if !work.isCoptic && !work.isOldEnglish && !work.isSanskrit {
+                if !work.isCoptic && !work.isOldEnglish && !work.isOldNorse && !work.isSanskrit {
                     if let url = PerseusLinks.wordStudy(form: selection.token.form, latin: work.isLatin) {
                         Button("Perseus Word Study Tool", systemImage: "safari") { openURL(url) }
                     }
@@ -254,6 +310,7 @@ struct LookupSheet: View {
             : analyses.count > 1 ? "The words joined here by sandhi or compounding (Digital Corpus of Sanskrit); tap one to look it up."
             : "Analysis from the Digital Corpus of Sanskrit."
         case "oe-forms": return "Possible lemmas and parses (automatic: from Beowulf and Tichý's Old English forms); most likely first."
+        case "non-forms": return "Possible lemmas and parses (automatic, from Zoëga's headwords); most likely first."
         default: return "Possible parses (Morpheus); most likely first."
         }
     }
@@ -282,6 +339,11 @@ struct LookupSheet: View {
                 return "<p class=\"note\">Not in Macdonell; Monier-Williams:</p>"
                     + mw.map { "<div class=\"entry\">\($0.html)</div>" }.joined(separator: "<hr>")
             }
+            // so is Zoëga: fall back to Cleasby–Vigfússon
+            if current == .zoega, let cv = lookup.entries[.cleasby], !cv.isEmpty {
+                return "<p class=\"note\">Not in Zoëga; Cleasby–Vigfússon:</p>"
+                    + cv.map { "<div class=\"entry\">\($0.html)</div>" }.joined(separator: "<hr>")
+            }
             return "<p class=\"none\">No entry found in \(current.shortName).</p>"
         }
         return entries.map { entry in
@@ -309,6 +371,9 @@ struct LookupSheet: View {
             case "oe-forms":
                 // stored under "ang:" so they never mix with Latin's analyses of the same spelling
                 analyses = texts.analyses(of: "ang:" + selection.token.form)
+            case "non-forms":
+                // likewise under "non:"
+                analyses = texts.analyses(of: "non:" + selection.token.form)
             case "scriptorium", "coptic-nlp", "oshb", "dcs":
                 analyses = texts.morphs(ofToken: selection.token.id)
                 // start on the word's main morpheme (its noun or verb)
@@ -321,11 +386,11 @@ struct LookupSheet: View {
     }
 
     private func lookupLemma() {
-        guard let key = currentLemmaKey, let lexicon = library.lexicon else {
+        guard let key = currentLemmaKey else {
             lookup = Lookup()
             return
         }
         let tag = analyses.indices.contains(chosen) ? analyses[chosen].tag : selection?.token.postag
-        lookup = lexicon.lookup(lemmaKey: key, partOfSpeech: work.isCoptic ? tag : nil)
+        lookup = library.lookup(lemmaKey: key, partOfSpeech: work.isCoptic ? tag : nil)
     }
 }

@@ -1,6 +1,8 @@
 """The texts the app ships with (Adam's default list, app/specs/text and
 languages.md); everything else in the full build is for downloadable
-modules. All dictionaries ship (decided Nov 7, 2026).
+modules. All dictionaries ship (decided Nov 7, 2026), except Old Norse's: the
+whole language is a download, its dictionaries a module of their own
+(build_lexicon_non.py; decided Nov 9, 2026).
 
 export_module.py --defaults selects these from texts_app.db."""
 

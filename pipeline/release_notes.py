@@ -13,8 +13,8 @@ from collections import Counter
 HERE = os.path.dirname(os.path.abspath(__file__))
 LIBRARY_VIEW = os.path.join(HERE, "..", "app", "AncientLanguages", "Library", "LibraryView.swift")
 LANGUAGES = [("greek", "Greek"), ("latin", "Latin"), ("hebrew", "Hebrew"), ("sanskrit", "Sanskrit"),
-             ("coptic", "Coptic"), ("oldEnglish", "Old English")]
-NAMES = {"grc": "Greek", "lat": "Latin", "hbo": "Hebrew", "san": "Sanskrit", "cop": "Coptic", "ang": "Old English"}
+             ("coptic", "Coptic"), ("oldEnglish", "Old English"), ("norse", "Old Norse")]       # (the credits are LibraryView.<key>Credits)
+NAMES = {"grc": "Greek", "lat": "Latin", "hbo": "Hebrew", "san": "Sanskrit", "cop": "Coptic", "ang": "Old English", "non": "Old Norse"}
 
 LICENCES = """Each text keeps the licence of its sources, given in CREDITS.md. In summary:
 

@@ -20,14 +20,29 @@ struct Catalog {
         var id: String { urn }
     }
 
+    /// A downloadable dictionary module (catalog.json `dictionaries`, optional:
+    /// Old Norse's Zoëga and Cleasby–Vigfússon, in dict-non.db.z). Inflated, it
+    /// is a lexicon file kept as Library/lexicon-<language>.db.
+    struct Dictionary: Codable, Identifiable, Hashable {
+        let language: String
+        let id: String
+        let title: String
+        let module: String
+        let bytes: Int?
+        var sha256: String? = nil
+    }
+
     private struct File: Codable {
         let version: Int
         var build: String? = nil
         var downloads: String? = nil
         let works: [Entry]
+        var dictionaries: [Dictionary]? = nil
     }
 
     let entries: [Entry]
+    /// Dictionary modules, one per file (entries sharing a module are listed once).
+    var dictionaries: [Dictionary] = []
     /// The build the bundled texts and the modules come from (pipeline/stamp_build.py).
     var build: String? = nil
     /// Where modules are downloaded from (empty until they're hosted).
@@ -39,8 +54,18 @@ struct Catalog {
               let file = try? JSONDecoder().decode(File.self, from: data) else {
             return Catalog(entries: [])
         }
-        return Catalog(entries: file.works, build: file.build, downloads: file.downloads)
+        var seen = Set<String>()
+        let dictionaries = (file.dictionaries ?? []).filter { seen.insert($0.module).inserted }
+        return Catalog(entries: file.works, dictionaries: dictionaries, build: file.build, downloads: file.downloads)
     }
+
+    /// The dictionary module for a language, if it has one to download.
+    func dictionary(for language: String) -> Dictionary? {
+        dictionaries.first { $0.language == language }
+    }
+
+    /// Whether a dictionary can be downloaded now (downloads are hosted).
+    func canDownload(_ d: Dictionary) -> Bool { !(downloads ?? "").isEmpty }
 
     /// Entries not in the library, optionally for one language and/or author (group).
     func missing(from works: [Work], language: LibraryLanguage? = nil, author: String? = nil) -> [Entry] {

@@ -8,7 +8,7 @@ Status: **in development** (not yet on the App Store).
 
 ## Languages and texts
 
-The app ships with the **default texts** below and every dictionary. The other texts in the catalogue can be added from **Read › Add Texts**: the app downloads each one as a small module (see [Publishing texts](#publishing-texts)). Readers can remove any text or whole language, the defaults included, and add them back later.
+The app ships with the **default texts** below and every dictionary except Old Norse's, which downloads with the first Old Norse text. The other texts in the catalogue can be added from **Read › Add Texts**: the app downloads each one as a small module (see [Publishing texts](#publishing-texts)). Readers can remove any text or whole language, the defaults included, and add them back later.
 
 | Language | Default texts (ship with the app) | Also available to download | Dictionaries |
 |---|---|---|---|
@@ -18,10 +18,11 @@ The app ships with the **default texts** below and every dictionary. The other t
 | **Sanskrit** | *Bhagavad Gītā*; the Kaṭha, Muṇḍaka, Taittirīya, Aitareya, Chāndogya, Bṛhadāraṇyaka and Śvetāśvatara Upaniṣads (IAST or Devanāgarī) | — | Macdonell; Monier-Williams |
 | **Coptic** | *Gospel of Thomas* (Coptic SCRIPTORIUM) | the Sahidic New Testament; the rest of the Nag Hammadi Library; the Berlin Codex (BG 8502); fragments of the Acts of Pilate | Comprehensive Coptic Lexicon; Crum |
 | **Old English** | *Beowulf* | the rest of the Anglo-Saxon Poetic Records (Junius, Vercelli and Exeter Books, Paris Psalter, Meters of Boethius, minor poems) | Klaeber's *Beowulf* glossary; Bosworth–Toller |
+| **Old Norse** | — | the Poetic Edda (Pettit's edition and translation); Snorri's Prose Edda; *Njáls saga*; *Egils saga* | Zoëga; Cleasby–Vigfússon (downloaded with the first Old Norse text) |
 
-In all, 473 texts: 165 ship with the app and 308 are downloads. The default list is `pipeline/defaults.py`. Hebrew and Sanskrit each have their own text-size setting.
+In all, 477 texts: 165 ship with the app and 312 are downloads. The default list is `pipeline/defaults.py`. Hebrew and Sanskrit each have their own text-size setting.
 
-Parses come from hand-made treebanks where they exist: Perseus, Gorman, PROIEL, MACULA, OSHB, DCS and Coptic SCRIPTORIUM. Elsewhere they are generated automatically, which is less reliable: by Morpheus for Greek and Latin, by the Coptic SCRIPTORIUM tools for Coptic, and from Klaeber's glossary and generated forms for Old English.
+Parses come from hand-made treebanks where they exist: Perseus, Gorman, PROIEL, MACULA, OSHB, DCS and Coptic SCRIPTORIUM. Elsewhere they are generated automatically, which is less reliable: by Morpheus for Greek and Latin, by the Coptic SCRIPTORIUM tools for Coptic, from Klaeber's glossary and generated forms for Old English, and from forms generated from Zoëga's headwords for Old Norse.
 
 **Size:** the App Store download is about 185 MB. Installed, the app takes about 400 MB: 250 MB for the app with its dictionaries, and 150 MB for the reader's library, unpacked on first launch.
 
@@ -96,8 +97,10 @@ app/specs/  design notes
     - STEPBible TBESH;
     - Coptic SCRIPTORIUM;
     - the Digital Corpus of Sanskrit (Oliver Hellwig);
-    - Tichý's Old English forms.
+    - Tichý's Old English forms;
+    - NeuralMIcePaHC (build time only, for the Old Norse texts).
   - **CC BY-NC-SA 4.0:** the PROIEL treebank (Vulgate, Caesar). It is non-commercial, which this project is.
+  - **CC BY-NC 4.0:** Edward Pettit's edition and translation of the Poetic Edda (Open Book Publishers, 2023). Also non-commercial.
   - **GPL v2:** the Nag Hammadi and Berlin Codex texts and Crum's dictionary from Marcion (Milan Konvička). Marcion is credited wherever its material appears.
   - **Public domain or CC0:**
     - the Westminster Leningrad Codex;
@@ -108,8 +111,10 @@ app/specs/  design notes
     - the Didot Latin Homer (Project Gutenberg #52691–52693);
     - Tischendorf's *Evangelia Apocrypha* (1876), whose Greek Gospel of Nicodemus was transcribed for this project (`pipeline/data/acts_of_pilate_tischendorf.txt`);
     - Bosworth–Toller;
+    - Finnur Jónsson's editions of the Prose Edda (1907), Njáls saga (1908) and Egils saga (1894), cleaned from the archive.org scans for this project (`pipeline/data/non_texts/`);
+    - Zoëga's and Cleasby–Vigfússon's Old Norse dictionaries (digitized by stscoundrel, MIT);
     - Horner's Sahidic New Testament;
-    - translations by Long, Besant, Müller and others (Project Gutenberg, Wikisource, sacred-texts.com).
+    - translations by Long, Besant, Müller, Dasent, Green, Brodeur and others (Project Gutenberg, Wikisource, sacred-texts.com).
 
   The full credits are shown in the app, at the foot of each language's list, and in each release's `CREDITS.md`. Per-source details are in [`pipeline/README.md`](pipeline/README.md#licences).
 - **Build-time tools** (not distributed): Morpheus (MPL-2.0) and the Coptic SCRIPTORIUM NLP tools (Apache 2.0).

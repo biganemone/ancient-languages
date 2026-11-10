@@ -126,7 +126,7 @@ final class TextStore {
 
     /// token.source codes (pipeline/compact_texts.py SOURCES)
     private static let sources: [Int: String] = [1: "morpheus", 2: "treebank", 3: "scriptorium", 4: "coptic-nlp",
-                                                 5: "oe-forms", 6: "oshb", 7: "dcs"]
+                                                 5: "oe-forms", 6: "oshb", 7: "dcs", 8: "non-forms"]
 
     /// Possible analyses of a word form (for works parsed by Morpheus).
     func analyses(of form: String) -> [Analysis] {
