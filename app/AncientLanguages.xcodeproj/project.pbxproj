@@ -101,7 +101,7 @@
 			mainGroup = A10000000000000000000004;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				A10000000000000000000021 /* XCLocalSwiftPackageReference "../../StudyCore" */,
+				A10000000000000000000021 /* XCRemoteSwiftPackageReference "studycore" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A10000000000000000000005 /* Products */;
@@ -260,17 +260,21 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		A10000000000000000000021 /* XCLocalSwiftPackageReference "../../StudyCore" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../StudyCore;
+/* Begin XCRemoteSwiftPackageReference section */
+		A10000000000000000000021 /* XCRemoteSwiftPackageReference "studycore" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/biganemone/studycore.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
 		};
-/* End XCLocalSwiftPackageReference section */
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		A10000000000000000000022 /* StudyCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A10000000000000000000021 /* XCLocalSwiftPackageReference "../../StudyCore" */;
+			package = A10000000000000000000021 /* XCRemoteSwiftPackageReference "studycore" */;
 			productName = StudyCore;
 		};
 /* End XCSwiftPackageProductDependency section */

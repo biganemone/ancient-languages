@@ -1,0 +1,15 @@
+{
+  "originHash" : "2507c01e521ab23d2c99530a3b30056da763276dacf775462e6c3daf26ff1f90",
+  "pins" : [
+    {
+      "identity" : "studycore",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/biganemone/studycore.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "766f4c1e90c95733e7655f59947f8b0b614db92a"
+      }
+    }
+  ],
+  "version" : 3
+}
